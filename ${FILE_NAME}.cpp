@@ -440,6 +440,6 @@ int main()
 	registers EAX;
 
 	EAX.CX.set();
-	std::cout << EAX << std::endl;
+	std::cout << EAX << std::endl; //00000000000000001111111100000000
 
 }
