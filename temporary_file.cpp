@@ -1,12 +1,17 @@
 #include<iostream>
 #include<string>
 
+
+
 template < size_t N >
-class sup_byte {
+class byte
+{
+private:
 	unsigned char *array_of_bytes;
-	int count_of_bit_in_register;
+	size_t count_of_bit_in_register;
+	
 public:
-	sup_byte()
+	byte()
 	{
 		array_of_bytes = new unsigned char[N];
 		for (int i = 0; i < N; ++i)
@@ -14,22 +19,26 @@ public:
 		count_of_bit_in_register = 8 * N;
 	}
 
-	class changereg : public sup_byte
+	class changereg : public byte
 	{
 	public:
 		int index;
-		sup_byte point;
+		byte point;
 
-		changereg(int ind, sup_byte&  p)
+		changereg(int ind, byte&  p)
 		{
 			index = ind;
 			point = p;
 		}
 
-		changereg operator=(bool val)
+		changereg operator=(changereg &rhs)
 		{
-			point.setbit(index, val);
+			point.setbit(index, rhs.return_point().getbit(index));
 			return *this;
+		}
+
+		byte& return_point() {
+			return point;
 		}
 
 		operator bool()
@@ -40,12 +49,6 @@ public:
 	};
 
 	changereg operator[](int index)
-	{
-		changereg ret(index, *this);
-		return ret;
-	}
-
-	changereg change(int index)
 	{
 		changereg ret(index, *this);
 		return ret;
@@ -100,22 +103,12 @@ public:
 			array_of_bytes[num] -= pow(2, num_in);
 
 	}
-};
-
-template < size_t N >
-class byte
-{
-private:
-	sup_byte<N> sup;
-public:
-
-	byte() = default;
 
 	byte(unsigned long val)
 	{
 		for (int i = 8 * N - 1; i >= 0; --i)
 		{
-			sup.setbit(i, val % 2);
+			setbit(i, val % 2);
 			val = val / 2;
 		}
 	}
@@ -130,9 +123,9 @@ public:
 			if (j >= N)
 				return;
 			if (str[i] == '0')
-				sup.setbit(j, 0);
+				setbit(j, 0);
 			else if (str[i] == '1')
-				sup.setbit(j, 1);
+				setbit(j, 1);
 			else
 			{
 				~byte();
@@ -140,14 +133,12 @@ public:
 			}
 			j++;
 		}
-	}
-
-	~byte() = default;
+	}	
 
 	byte& set()
 	{
 		for (size_t i = 0; i < 8 * N; ++i)
-			sup.setbit(i, 1);
+			setbit(i, 1);
 		return *this;
 	};
 
@@ -155,7 +146,7 @@ public:
 	{
 		if (index >= 8 * N || index < 0)
 			throw std::exception();
-		sup.setbit(8 * N - index - 1, value);
+		setbit(index, value);
 		return *this;
 	}
 
@@ -163,14 +154,14 @@ public:
 	{
 		for (size_t i = 0; i < 8 * N; ++i)
 		{
-			sup.setbit(i, 0);
+			setbit(i, 0);
 		}
 		return *this;
 	}
 
 	byte& reset(size_t index)
 	{
-		sup.setbit(index, 0);
+		setbit(index, 0);
 		return *this;
 	}
 
@@ -178,7 +169,7 @@ public:
 	{
 		for (size_t i = 0; i < 8 * N; i++)
 		{
-			sup.setbit(i, sup.getbit(i) ^ 1);
+			setbit(i, getbit(i) ^ 1);
 		}
 		return *this;
 	}
@@ -187,14 +178,14 @@ public:
 	{
 		if (index >= 8 * N || index < 0)
 			throw std::exception();
-		sup.setbit(8 * N - index - 1, sup.getbit(8 * N - index - 1) ^ 1);
+		setbit(index, getbit(index) ^ 1);
 		return *this;
 	}
 
-	typename sup_byte<N>::changereg operator[](size_t index)
+	typename changereg operator[](size_t index)
 	{
 
-		typename sup_byte<N>::changereg tmp = sup.change(index);
+		typename changereg tmp = change(index);
 		return tmp;
 	}
 
@@ -203,7 +194,7 @@ public:
 		size_t count = 0;
 		for (size_t i = 0; i < 8 * N; ++i)
 		{
-			count += sup.getbit(i);
+			count += getbit(i);
 		}
 		return count;
 	}
@@ -217,7 +208,7 @@ public:
 	{
 		if (index >= N || index < 0)
 			throw std::out_of_range("Error");
-		return sup.getbit(index);
+		return getbit(index);
 	}
 
 	bool any()
@@ -239,7 +230,7 @@ public:
 	{
 		for (size_t i = 0; i < N; ++i)
 		{
-			if (sup.getbit(i) == 0)
+			if (getbit(i) == 0)
 				return false;
 		}
 		return true;
@@ -249,12 +240,12 @@ public:
 	{
 		for (size_t i = 0; i < 8 * N; ++i)
 		{
-			if (sup.getbit(i) == 0 || rhs.sup.getbit(i) == 0)
+			if (getbit(i) == 0 || rhs.getbit(i) == 0)
 			{
-				sup.setbit(i, 0);
+				setbit(i, 0);
 			}
 			else
-				sup.setbit(i, 1);
+				setbit(i, 1);
 		}
 		return *this;
 	}
@@ -263,12 +254,12 @@ public:
 	{
 		for (size_t i = 0; i < 8 * N; ++i)
 		{
-			if (sup.getbit(i) == 1 || rhs.sup.getbit(i) == 1)
+			if (getbit(i) == 1 || rhs.getbit(i) == 1)
 			{
-				sup.setbit(i, 1);
+				setbit(i, 1);
 			}
 			else
-				sup.setbit(i, 0);
+				setbit(i, 0);
 		}
 		return *this;
 	}
@@ -277,7 +268,7 @@ public:
 	{
 		for (size_t i = 0; i < 8 * N; ++i)
 		{
-			sup.setbit(i, !(sup.getbit(i) == rhs.sup.getbit(i)));
+			setbit(i, !(getbit(i) == rhs.getbit(i)));
 		}
 		return *this;
 	}
@@ -287,9 +278,9 @@ public:
 		for (size_t i = 0; i < 8 * N; ++i)
 		{
 			if (i + pos < N)
-				sup.setbit(i, sup.getbit(i + pos));
+				setbit(i, getbit(i + pos));
 			else
-				sup.setbit(i, 0);
+				setbit(i, 0);
 		}
 		return *this;
 	}
@@ -299,9 +290,9 @@ public:
 		for (size_t i = 8 * N - 1; i > 0; --i)
 		{
 			if (i - pos >= 0)
-				sup.setbit(i, sup.getbit(i - pos));
+				setbit(i, getbit(i - pos));
 			else
-				sup.setbit(i, 0);
+				setbit(i, 0);
 		}
 		return *this;
 	}
@@ -310,10 +301,10 @@ public:
 	{
 		for (size_t i = 0; i < 8 * N; ++i)
 		{
-			if (sup.getbit(i) == 0)
-				sup.setbit(i, 1);
+			if (getbit(i) == 0)
+				setbit(i, 1);
 			else
-				sup.setbit(i, 0);
+				setbit(i, 0);
 		}
 		return *this;
 	}
@@ -323,9 +314,9 @@ public:
 		for (size_t i = 0; i < 8 * N; ++i)
 		{
 			if (i + pos < N)
-				sup.setbit(i, sup.getbit(i + pos));
+				setbit(i, getbit(i + pos));
 			else
-				sup.setbit(i, 0);
+				setbit(i, 0);
 		}
 		return *this;
 	}
@@ -335,11 +326,11 @@ public:
 		for (int i = 8 * N - 1; i >= 0; --i)
 		{
 			if (i - pos >= 0) {
-				int a = sup.getbit(i - pos);
-				sup.setbit(i, sup.getbit(i - pos));
+				int a = getbit(i - pos);
+				setbit(i, getbit(i - pos));
 			}
 			else
-				sup.setbit(i, 0);
+				setbit(i, 0);
 		}
 		return *this;
 	}
@@ -350,7 +341,7 @@ public:
 			return false;
 		for (int i = 0; i < 8 * N; ++i)
 		{
-			if (sup.getbit(i) != rhs.sup.getbit(i))
+			if (getbit(i) != rhs.getbit(i))
 				return false;
 		}
 		return true;
@@ -361,7 +352,7 @@ public:
 		char* str = new char[N + 1];
 		for (size_t i = 0; i < 8 * N; ++i)
 		{
-			str[i] = 48 + sup.getbit(i);
+			str[i] = 48 + getbit(i);
 		}
 		str[N] = '\0';
 		std::string stri;
@@ -377,9 +368,9 @@ public:
 		int two = 1;
 		for (int i = 8 * N - 1; i >= 0; --i)
 		{
-			if (tolong + sup.getbit(i) * two > 4294967295)
+			if (tolong + getbit(i) * two > 4294967295)
 				throw std::overflow_error("Overflow");
-			tolong += sup.getbit(i) * two;
+			tolong += getbit(i) * two;
 			two *= 2;
 		}
 		return tolong;
@@ -389,7 +380,7 @@ public:
 template<size_t N>
 std::ostream & operator<<(std::ostream &out, byte<N> &rhs)
 {
-	for (int i = 0; i < 8 * N; ++i)
+	for (int i = 7; i >= 0 ; --i)
 		out << rhs[i];
 	return out;
 }
@@ -419,27 +410,46 @@ byte<N> operator^ (const byte<N>& lhs, const byte<N>& rhs)
 	return tmp;
 }
 
+class EAX {
+	byte<2> A;
+	byte<1> AL;
+	byte<1> AH;
+public:
 
-struct registers {
-	byte <1> AX;
-	byte <1> BX;
-	byte <1> CX;
-	byte <1> DX;
-
-	friend std::ostream  & operator<<(std::ostream &out, registers &rhs) {
-		out << rhs.AX;
-		out << rhs.BX;
-		out << rhs.CX;
-		out << rhs.DX;
-		return out;
+	void get(const std::string &str) const {
+		if (str == "AH") get_AH();
+		if (str == "AL") get_AL();
+		if (str == "A") get_A();
 	}
+
+	byte <1> get_AH() const {
+		return AH;
+	}
+
+	byte <1> get_AL() const {
+		return AL;
+	}
+
+	byte <2> get_A() const {
+		return A;
+	}
+
 };
+
+std::ostream & operator<<(std::ostream &out, EAX &rhs)
+{
+	out << rhs.get_A();
+	out << rhs.get_AL();
+	out << rhs.get_AH();
+	return out;
+}
 
 int main()
 {
-	registers EAX;
-
-	EAX.CX.set();
-	std::cout << EAX << std::endl; //00000000000000001111111100000000
-
+	byte <1> a;
+	byte <1> b;
+	a.set(1);
+	b[1] = a[1];
+	std::cout << b << std::endl;
+	system("pause");
 }
