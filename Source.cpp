@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <map>
+#include <conio.h>
+#include <stack>
 
 
 
@@ -11,49 +12,23 @@ class byte
 private:
 	unsigned char *array_of_bytes;
 	size_t count_of_bit_in_register;
-	
+
 public:
 	byte()
 	{
 		array_of_bytes = new unsigned char[N];
-		for (int i = 0; i < N; ++i)
+		for (int i = 0; i < 8 * N; ++i)
 			array_of_bytes[i] = 0;
 		count_of_bit_in_register = 8 * N;
 	}
 
-	class changereg : public byte
-	{
-	public:
-		int index;
-		byte point;
-
-		changereg(int ind, byte&  p)
-		{
-			index = ind;
-			point = p;
+	int to_int() const {
+		int res = 0;
+		for (size_t i = 0; i < 8 * N - 1; ++i) {
+			if (getbit(i))
+				res += (int)pow(2, i);
 		}
-
-		changereg operator=(changereg &rhs)
-		{
-			point.setbit(index, rhs.return_point().getbit(index));
-			return *this;
-		}
-
-		byte& return_point() {
-			return point;
-		}
-
-		operator bool()
-		{
-			return point.getbit(index);
-		}
-
-	};
-
-	changereg operator[](int index)
-	{
-		changereg ret(index, *this);
-		return ret;
+		return res;
 	}
 
 	const bool operator[](int index) const
@@ -65,7 +40,7 @@ public:
 		unsigned char current = array_of_bytes[num];
 		for (int i = 0; i <= num_in; ++i)
 		{
-			b = current % 2;
+			ret = current % 2;
 			current /= 2;
 		}
 		return ret;
@@ -75,7 +50,7 @@ public:
 	bool getbit(int index) const
 	{
 		int cur = count_of_bit_in_register - 1 - index;
-		size_t ret;
+		bool ret;
 		int num = (cur / 8);
 		int num_in = cur % 8;
 		unsigned char current = array_of_bytes[num];
@@ -100,15 +75,19 @@ public:
 			current /= 2;
 		}
 		if (curr_bit == 0 && newval == 1)
-			array_of_bytes[num] += pow(2, num_in);
+			array_of_bytes[num] += (unsigned char)pow(2, num_in);
 		else if (curr_bit == 1 && newval == 0)
-			array_of_bytes[num] -= pow(2, num_in);
+			array_of_bytes[num] -= (unsigned char)pow(2, num_in);
 
 	}
 
 	byte(unsigned long val)
 	{
-		for (int i = 8 * N - 1; i >= 0; --i)
+		array_of_bytes = new unsigned char[N];
+		for (int i = 0; i < 8 * N; ++i)
+			array_of_bytes[i] = 0;
+		count_of_bit_in_register = 8 * N;
+		for (int i = 0; i < 8 * N; ++i)
 		{
 			setbit(i, val % 2);
 			val = val / 2;
@@ -135,7 +114,7 @@ public:
 			}
 			j++;
 		}
-	}	
+	}
 
 	byte& set()
 	{
@@ -182,13 +161,6 @@ public:
 			throw std::exception();
 		setbit(index, getbit(index) ^ 1);
 		return *this;
-	}
-
-	typename changereg operator[](size_t index)
-	{
-
-		typename changereg tmp = change(index);
-		return tmp;
 	}
 
 	size_t count() const
@@ -337,7 +309,7 @@ public:
 		return *this;
 	}
 
-	bool operator== (const byte& rhs)
+	bool operator== (const byte& rhs) const
 	{
 		if (N != rhs.size())
 			return false;
@@ -347,6 +319,51 @@ public:
 				return false;
 		}
 		return true;
+	}
+
+	bool operator!= (const byte& rhs) const
+	{
+		if (N != rhs.size())
+			return false;
+		for (int i = 0; i < 8 * N; ++i)
+		{
+			if (getbit(i) != rhs.getbit(i))
+				return true;
+		}
+		return false;
+	}
+
+	byte operator += (const byte& rhs) {
+		if (N != rhs.size())
+			return false;
+		for (int i = 8 * N - 1; i >= 0; --i)
+			setbit(i, !(rhs.getbit(i) == getbit(i)));
+		return *this;
+	}
+
+	byte operator += (const int& rhs) {
+		int temp_bit = to_int() + rhs;
+		for (size_t i = 0; i <= 8*N - 1; ++i) {
+			setbit(i, temp_bit % 2);
+			temp_bit /= 2;
+		}
+		return *this;
+	}
+
+	byte operator= (const byte& rhs) {
+		for (size_t i = 0; i <= 8 * N - 1; ++i) 
+				setbit(i, rhs.getbit(i));
+		return *this;
+	}
+
+	byte operator =(int val) {
+		reset();
+		for (int i = 0; i < 8 * N; ++i)
+		{
+			setbit(i, val % 2);
+			val = val / 2;
+		}
+		return *this;
 	}
 
 	std::string to_string()
@@ -377,13 +394,14 @@ public:
 		}
 		return tolong;
 	}
+
 };
 
 template<size_t N>
 std::ostream & operator<<(std::ostream &out, byte<N> &rhs)
 {
-	for (int i = 7; i >= 0 ; --i)
-		out << rhs[i];
+	for (int i = 8*N-1; i >= 0; --i)
+		out << rhs.getbit(i);
 	return out;
 }
 
@@ -412,47 +430,170 @@ byte<N> operator^ (const byte<N>& lhs, const byte<N>& rhs)
 	return tmp;
 }
 
+template<size_t N>
+byte<N> operator+(const byte<N>& lhs, const byte<N> &rhs)
+{
+	byte<N> tmp = lhs;
+	tmp += rhs;
+	return tmp;
+}
+
+template<size_t N>
+byte<N> operator+(const byte<N>& lhs, const int& rhs)
+{
+	byte<N> tmp = lhs;
+	tmp += rhs;
+	return tmp;
+}
+
 class registers {
-	std::map<const std::string, byte<1>> cont;
+protected:
+	byte<1> upper_first;
+	byte<1> upper_second;
+	byte<1> lower_first;
+	byte<1> lower_second;
 public:
-	registers(const std::string &title_upper_first, const std::string &title_upper_second, 
-		      const std::string &title_lower_first, const std::string &title_lower_second)
-	{
-
-		byte<1> upper_first;
-		byte<1> upper_second;
-		byte<1> lower_first;;
-		byte<1> lower_second;
-
-		cont.emplace(title_upper_first, upper_first);
-		cont.emplace(title_upper_second, upper_second);
-		cont.emplace(title_lower_first, lower_first);
-		cont.emplace(title_lower_second, lower_second);
-
-	}
-	
-	std::map<const std::string, byte<1>>& out() {
-		return cont;
+	byte<1> &return_byte(size_t option) {
+		switch (option) {
+		case 0:
+			return upper_first;
+		case 1:
+			return upper_second;
+		case 2:
+			return lower_first;
+		case 3:
+			return lower_second;
+		default:
+			break;
+		}
 	}
 };
 
 std::ostream & operator<<(std::ostream &out, registers &rhs)
 {
-
-	for (auto it = rhs.out().begin(); it != rhs.out().end(); ++it)
-	{
-		out /*<< (*it).first << " : "*/ << (*it).second/* << std::endl*/;
+	for (size_t i = 0; i < 4; ++i) {
+		out << rhs.return_byte(i);
 	}
-
 	return out;
 }
 
+class saver_registers
+{
+	registers EAX;
+	registers EBX;
+public:
+	byte<1> &return_by_string(const std::string &title) {
+		if (title == "AH") return EAX.return_byte(3);
+		else if (title == "AL") return EAX.return_byte(2);
+		else if (title == "BH") return EBX.return_byte(3);
+		else if (title == "BL") return EBX.return_byte(2);
+	}
+
+	registers &return_reg_by_string(const std::string &title) {
+		if (title == "EAX") return EAX;
+		else if (title == "EBX") return EBX;
+	}
+
+	registers mov_reg(const std::string &in, const std::string &out) {
+		for(size_t i = 0; i < 4; ++i)
+			return_reg_by_string(in) = return_reg_by_string(out);
+		return return_reg_by_string(in);
+	}
+
+	byte<1> mov(const std::string &in, const std::string &out) {
+		return_by_string(in) = return_by_string(out);
+		return return_by_string(in);
+	}
+
+	byte<1> mov(const std::string &in, int out) {
+		return_by_string(in) = out;
+		return return_by_string(in);
+	}
+
+	byte<1> add(const std::string &in, const std::string &out) {
+		return_by_string(in) += return_by_string(out);
+		return return_by_string(in);
+	}
+
+	byte<1> add(const std::string &in, int out) {
+		return_by_string(in) += out;
+		return return_by_string(in);
+	}
+
+	bool cmp(const std::string &in, const std::string &out) {
+		if (return_by_string(in) == return_by_string(out)) {
+			std::cout << "eq" << std::endl;
+			return true;
+		}
+		if (return_by_string(in) != return_by_string(out)) {
+			std::cout << "not eq" << std::endl;
+			return false;
+		}
+	}
+
+	bool parser(const std::string &input) {
+		if (input == "mov") {
+			std::string in, out;
+			std::cin >> in >> out;
+			int i = std::atoi(out.c_str());
+			if (i)
+				mov(in, i);
+			else if (out == "AH" || out == "BH" || out == "CH" || out == "DH")
+				mov(in, out);
+			else if (out == "EAX" || out == "EBX")
+				mov_reg(in, out);
+			return true;
+		}
+		if (input == "add") {
+			std::string in, out;
+			std::cin >> in >> out;
+			int i = std::atoi(out.c_str());
+			if (i)
+				add(in, i);
+			else if (out == "AH" || out == "BH" || out == "CH" || out == "DH")
+				add(in, out);
+			return true;
+		}
+		if (input == "set") {
+			std::string in;
+			std::cin >> in;
+			return_by_string(in).set();
+			return true;
+		}
+		if (input == "cmp") {
+			std::string in, out;
+			std::cin >> in >> out;
+			cmp(in, out);
+			return true;
+		}
+		if (input == "out") {
+			std::cout <<
+				"EAX: " << EAX << std::endl <<
+				"EBX: " << EBX << std::endl << std::endl;
+			return true;
+		}
+		else if (input == "exit") throw false;
+		else {
+			std::cout << "unavailable command" << std::endl;
+			return true;
+		}
+	}
+};
+
 int main()
 {
-	byte<1> r;
-	registers EAX("UF", "US", "AH", "AL");
-	EAX.out()["AL"].set(1);
-	std::cout << EAX << std::endl;
-	
-	std::pair <const std::string, byte<1>> a = { "as", r };
+	saver_registers one;
+	try {
+		std::string input;
+		while (input != "exit") {
+			system("cls");
+			std::cin >> input;
+			one.parser(input);
+			system("pause");
+		}
+	}
+	catch (size_t number) {
+		std::cout << number << std::endl;
+	}
+
 }
