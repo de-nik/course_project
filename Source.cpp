@@ -329,15 +329,13 @@ public:
 		return false;
 	}
 
-	byte operator += (const byte& rhs) {
-		if (N != rhs.size())
-			return false;
+	byte &operator += (const byte& rhs) {
 		for (int i = 8 * N - 1; i >= 0; --i)
-			//setbit(i, (rhs.getbit(i) != getbit(i)));
+			setbit(i, (rhs.getbit(i) != getbit(i)));
 			return *this;
 	}
 
-	byte operator += (const int& rhs) {
+	byte &operator += (const int& rhs) {
 		int temp_bit = to_int() + rhs;
 		for (size_t i = 0; i <= 8 * N - 1; ++i) {
 			setbit(i, temp_bit % 2);
@@ -346,13 +344,28 @@ public:
 		return *this;
 	}
 
-	byte operator= (const byte& rhs) {
+	byte &operator -= (const byte& rhs) {
+		for (int i = 8 * N - 1; i >= 0; --i)
+			setbit(i, (rhs.getbit(i) != getbit(i)));
+		return *this;
+	}
+
+	byte &operator -= (const int& rhs) {
+		int temp_bit = to_int() - rhs;
+		for (size_t i = 0; i <= 8 * N - 1; ++i) {
+			setbit(i, temp_bit % 2);
+			temp_bit /= 2;
+		}
+		return *this;
+	}
+
+	byte &operator =(const byte& rhs) {
 		for (size_t i = 0; i <= 8 * N - 1; ++i)
 			setbit(i, rhs.getbit(i));
 		return *this;
 	}
 
-	byte operator =(int val) {
+	byte &operator =(int val) {
 		reset();
 		for (int i = 0; i < 8 * N; ++i)
 		{
@@ -426,21 +439,21 @@ byte<N> operator^ (const byte<N>& lhs, const byte<N>& rhs)
 	return tmp;
 }
 
-template<size_t N>
-byte<N> operator+(const byte<N>& lhs, const byte<N> &rhs)
-{
-	byte<N> tmp = lhs;
-	tmp += rhs;
-	return tmp;
-}
-
-template<size_t N>
-byte<N> operator+(const byte<N>& lhs, const int& rhs)
-{
-	byte<N> tmp = lhs;
-	tmp += rhs;
-	return tmp;
-}
+//template<size_t N>
+//byte<N> operator+(const byte<N>& lhs, const byte<N> &rhs)
+//{
+//	byte<N> tmp = lhs;
+//	tmp += rhs;
+//	return tmp;
+//}
+//
+//template<size_t N>
+//byte<N> operator+(const byte<N>& lhs, const int& rhs)
+//{
+//	byte<N> tmp = lhs;
+//	tmp += rhs;
+//	return tmp;
+//}
 
 class registers {
 protected:
@@ -536,6 +549,16 @@ public:
 		return return_by_string(in);
 	}
 
+	byte<1> sub(const std::string &in, const std::string &out) {
+		return_by_string(in) -= return_by_string(out);
+		return return_by_string(in);
+	}
+
+	byte<1> sub(const std::string &in, const unsigned long& out) {
+		return_by_string(in) -= out;
+		return return_by_string(in);
+	}
+
 	bool cmp(const std::string &in, const std::string &out) {
 		if (return_by_string(in) == return_by_string(out)) {
 			std::cout << "eq" << std::endl;
@@ -551,7 +574,7 @@ public:
 		if (input == "mov") {
 			std::string in, out;
 			std::cin >> in >> out;
-			if (out == "AH" || out == "BH" || out == "CH" || out == "DH")
+			if (out == "AH" || out == "BH" || out == "AL" || out == "BL")
 				mov(in, out);
 			else if (out == "EAX" || out == "EBX")
 				mov_reg(in, out);
@@ -559,7 +582,7 @@ public:
 				unsigned long i = std::atoi(out.c_str());
 				if (in == "EAX" || in == "EBX")
 					mov_reg(in, i);
-				if (in == "AH" || in == "BH" || in == "CH" || in == "DH")
+				if (in == "AH" || in == "BH" || in == "AL" || in == "BL")
 					mov(in, i);
 			}
 
@@ -568,11 +591,22 @@ public:
 		if (input == "add") {
 			std::string in, out;
 			std::cin >> in >> out;
-			if (out == "AH" || out == "BH" || out == "CH" || out == "DH")
+			if (out == "AH" || out == "BH" || out == "AL" || out == "BL")
 				add(in, out);
 			else {
 				unsigned long i = std::atoi(out.c_str());
 				add(in, i);
+			}
+			return true;
+		}
+		if (input == "sub") {
+			std::string in, out;
+			std::cin >> in >> out;
+			if (out == "AH" || out == "BH" || out == "AL" || out == "BL")
+				sub(in, out);
+			else {
+				unsigned long i = std::atoi(out.c_str());
+				sub(in, i);
 			}
 			return true;
 		}
@@ -619,7 +653,7 @@ int main()
 	}
 	/*byte<1> a(5);
 	byte<1> b(7);
-	byte<1> r;
-	r = (a + b);
-	std::cout  << a;*/
+	byte<1> r(1);
+	r += a;;
+	std::cout  << a <<"|"<< r;*/
 }
