@@ -1,10 +1,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <conio.h>
-#include <stack>
-
-
 
 template < size_t N >
 class byte
@@ -337,13 +333,13 @@ public:
 		if (N != rhs.size())
 			return false;
 		for (int i = 8 * N - 1; i >= 0; --i)
-			setbit(i, !(rhs.getbit(i) == getbit(i)));
-		return *this;
+			//setbit(i, (rhs.getbit(i) != getbit(i)));
+			return *this;
 	}
 
 	byte operator += (const int& rhs) {
 		int temp_bit = to_int() + rhs;
-		for (size_t i = 0; i <= 8*N - 1; ++i) {
+		for (size_t i = 0; i <= 8 * N - 1; ++i) {
 			setbit(i, temp_bit % 2);
 			temp_bit /= 2;
 		}
@@ -351,8 +347,8 @@ public:
 	}
 
 	byte operator= (const byte& rhs) {
-		for (size_t i = 0; i <= 8 * N - 1; ++i) 
-				setbit(i, rhs.getbit(i));
+		for (size_t i = 0; i <= 8 * N - 1; ++i)
+			setbit(i, rhs.getbit(i));
 		return *this;
 	}
 
@@ -400,7 +396,7 @@ public:
 template<size_t N>
 std::ostream & operator<<(std::ostream &out, byte<N> &rhs)
 {
-	for (int i = 8*N-1; i >= 0; --i)
+	for (int i = 8 * N - 1; i >= 0; --i)
 		out << rhs.getbit(i);
 	return out;
 }
@@ -472,7 +468,7 @@ public:
 std::ostream & operator<<(std::ostream &out, registers &rhs)
 {
 	for (size_t i = 0; i < 4; ++i) {
-		out << rhs.return_byte(i);
+		out << rhs.return_byte(i) << " : ";
 	}
 	return out;
 }
@@ -495,8 +491,28 @@ public:
 	}
 
 	registers mov_reg(const std::string &in, const std::string &out) {
-		for(size_t i = 0; i < 4; ++i)
-			return_reg_by_string(in) = return_reg_by_string(out);
+		return_reg_by_string(in) = return_reg_by_string(out);
+		return return_reg_by_string(in);
+	}
+
+	registers mov_reg(const std::string &in, const unsigned long &out) {
+		if (out <= 255)
+			return_reg_by_string(in).return_byte(3) = out;
+		else if (out <= 65535) {
+			return_reg_by_string(in).return_byte(3) = 255;
+			return_reg_by_string(in).return_byte(2) = out - 256;
+		}
+		else if (out <= 16777215) {
+			return_reg_by_string(in).return_byte(3) = 255;
+			return_reg_by_string(in).return_byte(2) = 65535;
+			return_reg_by_string(in).return_byte(1) = out - 65536;
+		}
+		else if (out <= 4294967295) {
+			return_reg_by_string(in).return_byte(3) = 255;
+			return_reg_by_string(in).return_byte(2) = 65535;
+			return_reg_by_string(in).return_byte(1) = 16777215;
+			return_reg_by_string(in).return_byte(1) = out - 4294967296;
+		}
 		return return_reg_by_string(in);
 	}
 
@@ -505,7 +521,7 @@ public:
 		return return_by_string(in);
 	}
 
-	byte<1> mov(const std::string &in, int out) {
+	byte<1> mov(const std::string &in, const unsigned long& out) {
 		return_by_string(in) = out;
 		return return_by_string(in);
 	}
@@ -515,7 +531,7 @@ public:
 		return return_by_string(in);
 	}
 
-	byte<1> add(const std::string &in, int out) {
+	byte<1> add(const std::string &in, const unsigned long& out) {
 		return_by_string(in) += out;
 		return return_by_string(in);
 	}
@@ -535,23 +551,29 @@ public:
 		if (input == "mov") {
 			std::string in, out;
 			std::cin >> in >> out;
-			int i = std::atoi(out.c_str());
-			if (i)
-				mov(in, i);
-			else if (out == "AH" || out == "BH" || out == "CH" || out == "DH")
+			if (out == "AH" || out == "BH" || out == "CH" || out == "DH")
 				mov(in, out);
 			else if (out == "EAX" || out == "EBX")
 				mov_reg(in, out);
+			else {
+				unsigned long i = std::atoi(out.c_str());
+				if (in == "EAX" || in == "EBX")
+					mov_reg(in, i);
+				if (in == "AH" || in == "BH" || in == "CH" || in == "DH")
+					mov(in, i);
+			}
+
 			return true;
 		}
 		if (input == "add") {
 			std::string in, out;
 			std::cin >> in >> out;
-			int i = std::atoi(out.c_str());
-			if (i)
-				add(in, i);
-			else if (out == "AH" || out == "BH" || out == "CH" || out == "DH")
+			if (out == "AH" || out == "BH" || out == "CH" || out == "DH")
 				add(in, out);
+			else {
+				unsigned long i = std::atoi(out.c_str());
+				add(in, i);
+			}
 			return true;
 		}
 		if (input == "set") {
@@ -595,5 +617,9 @@ int main()
 	catch (size_t number) {
 		std::cout << number << std::endl;
 	}
-
+	/*byte<1> a(5);
+	byte<1> b(7);
+	byte<1> r;
+	r = (a + b);
+	std::cout  << a;*/
 }
