@@ -222,11 +222,11 @@ public:
 		return tmp;
 	}
 
-	~byte() {
-		for (int i = 8 * N - 1; i >= 0; --i)
-			array_of_bytes[i] = 0;
-		delete [] array_of_bytes;
-	}
+	//~byte() {
+	//	for (int i = 8 * N - 1; i >= 0; --i)
+	//		array_of_bytes[i] = 0;
+	//	delete [] array_of_bytes;
+	//}
 	/*std::string to_string()
 	{
 		char* str = new char[N + 1];
