@@ -1,51 +1,44 @@
 #include <iostream>
 #include <string>
-#include <vector>
 
 template < size_t N >
 class byte
 {
 private:
 	unsigned char *array_of_bytes;
-	size_t count_of_bit_in_register;
-
 public:
 	byte()
 	{
 		array_of_bytes = new unsigned char[N];
 		for (int i = 0; i < 8 * N; ++i)
 			array_of_bytes[i] = 0;
-		count_of_bit_in_register = 8 * N;
 	}
 
 	int to_int() const {
 		int res = 0;
-		for (size_t i = 0; i < 8 * N - 1; ++i) {
-			if (getbit(i))
-				res += (int)pow(2, i);
+
+		if (getbit(0)) {
+				++res;
+			for (int i = 0; i < 8 * N; ++i) {
+				if (!getbit(i))
+					res += (int)pow(2, 8 * N - 1 - i);
+			}
+			return -res;
+		}
+
+		else {
+			for (int i = 8 * N - 1; i > 0; --i) {
+				if (getbit(i))
+					res += (int)pow(2, 8 * N - 1 - i);
+			}
 		}
 		return res;
-	}
-
-	const bool operator[](int index) const
-	{
-		int cur = count_of_bit_in_register - 1 - index;
-		bool ret;
-		int num = (cur / 8);
-		int num_in = cur % 8;
-		unsigned char current = array_of_bytes[num];
-		for (int i = 0; i <= num_in; ++i)
-		{
-			ret = current % 2;
-			current /= 2;
-		}
-		return ret;
 
 	}
 
 	bool getbit(int index) const
 	{
-		int cur = count_of_bit_in_register - 1 - index;
+		int cur = 8 * N - 1 - index;
 		bool ret;
 		int num = (cur / 8);
 		int num_in = cur % 8;
@@ -60,7 +53,7 @@ public:
 
 	void setbit(int index, size_t newval)
 	{
-		int cur = count_of_bit_in_register - 1 - index;
+		int cur = 8 * N - 1 - index;
 		int num = (cur / 8);
 		int num_in = cur % 8;
 		size_t curr_bit;
@@ -77,38 +70,23 @@ public:
 
 	}
 
-	byte(unsigned long val)
+	byte(int val)
 	{
+		int tmp = val;
 		array_of_bytes = new unsigned char[N];
-		for (int i = 0; i < 8 * N; ++i)
+		for (int i = 8 * N - 1; i >= 0; --i)
 			array_of_bytes[i] = 0;
-		count_of_bit_in_register = 8 * N;
-		for (int i = 0; i < 8 * N; ++i)
-		{
-			setbit(i, val % 2);
+
+		for (int i = 8 * N - 1; i >= 0; --i) {
+			setbit(i, abs((val % 2)));
 			val = val / 2;
 		}
-	}
-
-	byte(const std::string& str, size_t pos, size_t n)
-	{
-		size_t j = 0;
-		if (pos >= str.size())
-			throw std::out_of_range("Error!");
-		for (size_t i = pos; i < n; ++i)
-		{
-			if (j >= N)
-				return;
-			if (str[i] == '0')
-				setbit(j, 0);
-			else if (str[i] == '1')
-				setbit(j, 1);
-			else
-			{
-				~byte();
-				throw std::exception();
+		if (tmp < 0) {
+			flip();
+			flip(8 * N - 1);
+			for (int i = 2; !getbit(8 * N - i + 1); ++i) {
+				flip(8 * N - i);
 			}
-			j++;
 		}
 	}
 
@@ -119,14 +97,6 @@ public:
 		return *this;
 	};
 
-	byte& set(size_t index, bool value = true)
-	{
-		if (index >= 8 * N || index < 0)
-			throw std::exception();
-		setbit(index, value);
-		return *this;
-	}
-
 	byte& reset()
 	{
 		for (size_t i = 0; i < 8 * N; ++i)
@@ -136,179 +106,23 @@ public:
 		return *this;
 	}
 
-	byte& reset(size_t index)
-	{
-		setbit(index, 0);
-		return *this;
-	}
-
 	byte& flip()
 	{
 		for (size_t i = 0; i < 8 * N; i++)
 		{
-			setbit(i, getbit(i) ^ 1);
+			setbit(i, !getbit(i));
 		}
 		return *this;
 	}
 
 	byte& flip(size_t index)
 	{
-		if (index >= 8 * N || index < 0)
-			throw std::exception();
-		setbit(index, getbit(index) ^ 1);
-		return *this;
-	}
-
-	size_t count() const
-	{
-		size_t count = 0;
-		for (size_t i = 0; i < 8 * N; ++i)
-		{
-			count += getbit(i);
-		}
-		return count;
-	}
-
-	size_t size() const
-	{
-		return N;
-	}
-
-	bool test(size_t index) const
-	{
-		if (index >= N || index < 0)
-			throw std::out_of_range("Error");
-		return getbit(index);
-	}
-
-	bool any()
-	{
-		for (size_t i = 0; i < N; ++i)
-		{
-			if ((*this).operator[](i) == 1)
-				return true;
-		}
-		return false;
-	}
-
-	bool none()
-	{
-		return !(any());
-	}
-
-	bool all() const
-	{
-		for (size_t i = 0; i < N; ++i)
-		{
-			if (getbit(i) == 0)
-				return false;
-		}
-		return true;
-	}
-
-	byte& operator&= (const byte& rhs)
-	{
-		for (size_t i = 0; i < 8 * N; ++i)
-		{
-			if (getbit(i) == 0 || rhs.getbit(i) == 0)
-			{
-				setbit(i, 0);
-			}
-			else
-				setbit(i, 1);
-		}
-		return *this;
-	}
-
-	byte& operator|= (const byte& rhs)
-	{
-		for (size_t i = 0; i < 8 * N; ++i)
-		{
-			if (getbit(i) == 1 || rhs.getbit(i) == 1)
-			{
-				setbit(i, 1);
-			}
-			else
-				setbit(i, 0);
-		}
-		return *this;
-	}
-
-	byte& operator^= (const byte& rhs)
-	{
-		for (size_t i = 0; i < 8 * N; ++i)
-		{
-			setbit(i, !(getbit(i) == rhs.getbit(i)));
-		}
-		return *this;
-	}
-
-	byte& operator<<= (size_t pos)
-	{
-		for (size_t i = 0; i < 8 * N; ++i)
-		{
-			if (i + pos < N)
-				setbit(i, getbit(i + pos));
-			else
-				setbit(i, 0);
-		}
-		return *this;
-	}
-
-	byte& operator>>= (size_t pos)
-	{
-		for (size_t i = 8 * N - 1; i > 0; --i)
-		{
-			if (i - pos >= 0)
-				setbit(i, getbit(i - pos));
-			else
-				setbit(i, 0);
-		}
-		return *this;
-	}
-
-	byte operator~()
-	{
-		for (size_t i = 0; i < 8 * N; ++i)
-		{
-			if (getbit(i) == 0)
-				setbit(i, 1);
-			else
-				setbit(i, 0);
-		}
-		return *this;
-	}
-
-	byte operator<<(size_t pos)
-	{
-		for (size_t i = 0; i < 8 * N; ++i)
-		{
-			if (i + pos < N)
-				setbit(i, getbit(i + pos));
-			else
-				setbit(i, 0);
-		}
-		return *this;
-	}
-
-	byte operator >> (size_t pos)
-	{
-		for (int i = 8 * N - 1; i >= 0; --i)
-		{
-			if (i - pos >= 0) {
-				int a = getbit(i - pos);
-				setbit(i, getbit(i - pos));
-			}
-			else
-				setbit(i, 0);
-		}
+		setbit(index, !getbit(index));
 		return *this;
 	}
 
 	bool operator== (const byte& rhs) const
 	{
-		if (N != rhs.size())
-			return false;
 		for (int i = 0; i < 8 * N; ++i)
 		{
 			if (getbit(i) != rhs.getbit(i))
@@ -319,8 +133,6 @@ public:
 
 	bool operator!= (const byte& rhs) const
 	{
-		if (N != rhs.size())
-			return false;
 		for (int i = 0; i < 8 * N; ++i)
 		{
 			if (getbit(i) != rhs.getbit(i))
@@ -332,14 +144,23 @@ public:
 	byte &operator += (const byte& rhs) {
 		for (int i = 8 * N - 1; i >= 0; --i)
 			setbit(i, (rhs.getbit(i) != getbit(i)));
-			return *this;
+		return *this;
 	}
 
-	byte &operator += (const int& rhs) {
-		int temp_bit = to_int() + rhs;
-		for (size_t i = 0; i <= 8 * N - 1; ++i) {
-			setbit(i, temp_bit % 2);
-			temp_bit /= 2;
+	byte &operator += (int rhs) {
+		int val = to_int() + rhs;
+		int tmp = val;
+		for (int i = 8 * N - 1; i >= 0; --i) {
+			setbit(i, abs((val % 2)));
+
+			val = val / 2;
+		}
+		if (tmp < 0) {
+			flip();
+			flip(8 * N - 1);
+			for (int i = 2; !getbit(8 * N - i + 1); ++i) {
+				flip(8 * N - i);
+			}
 		}
 		return *this;
 	}
@@ -350,11 +171,20 @@ public:
 		return *this;
 	}
 
-	byte &operator -= (const int& rhs) {
-		int temp_bit = to_int() - rhs;
-		for (size_t i = 0; i <= 8 * N - 1; ++i) {
-			setbit(i, temp_bit % 2);
-			temp_bit /= 2;
+	byte &operator -= (int rhs) {
+		int val = to_int() - rhs;
+		int tmp = val;
+		for (int i = 8 * N - 1; i >= 0; --i) {
+			setbit(i, abs((val % 2)));
+
+			val = val / 2;
+		}
+		if (tmp < 0) {
+			flip();
+			flip(8 * N - 1);
+			for (int i = 2; !getbit(8 * N - i + 1); ++i) {
+				flip(8 * N - i);
+			}
 		}
 		return *this;
 	}
@@ -367,15 +197,37 @@ public:
 
 	byte &operator =(int val) {
 		reset();
-		for (int i = 0; i < 8 * N; ++i)
-		{
-			setbit(i, val % 2);
+		int tmp = val;
+		for (int i = 8 * N - 1; i >= 0; --i) {
+			setbit(i, abs((val % 2)));
+
 			val = val / 2;
+		}
+		if (tmp < 0) {
+			flip();
+			flip(8 * N - 1);
+			for (int i = 2; !getbit(8 * N - i + 1); ++i) {
+				flip(8 * N - i);
+			}
 		}
 		return *this;
 	}
 
-	std::string to_string()
+	byte<1> conc(size_t k) {
+		byte<1> tmp;
+		for (int i = 8*(N - k) - 1, k = 7; i >= 8*(N - k + 1); --i, --k) {
+			tmp.setbit(k, getbit(i));
+			std::cout << " get: " << getbit(i) << std::endl;
+		}
+		return tmp;
+	}
+
+	~byte() {
+		for (int i = 8 * N - 1; i >= 0; --i)
+			array_of_bytes[i] = 0;
+		delete [] array_of_bytes;
+	}
+	/*std::string to_string()
 	{
 		char* str = new char[N + 1];
 		for (size_t i = 0; i < 8 * N; ++i)
@@ -388,55 +240,16 @@ public:
 		stri = str;
 		delete[] str;
 		return stri;
-	}
-
-	unsigned long to_ulong()
-	{
-		double tolong = 0;
-		int two = 1;
-		for (int i = 8 * N - 1; i >= 0; --i)
-		{
-			if (tolong + getbit(i) * two > 4294967295)
-				throw std::overflow_error("Overflow");
-			tolong += getbit(i) * two;
-			two *= 2;
-		}
-		return tolong;
-	}
+	}*/
 
 };
 
 template<size_t N>
 std::ostream & operator<<(std::ostream &out, byte<N> &rhs)
 {
-	for (int i = 8 * N - 1; i >= 0; --i)
+	for (int i = 0; i < 8 * N; ++i)
 		out << rhs.getbit(i);
 	return out;
-}
-
-template<size_t N>
-byte<N> operator& (const byte<N>& lhs, const byte<N>& rhs)
-{
-	byte<N> tmp = lhs;
-	tmp &= rhs;
-	return tmp;
-}
-
-template<size_t N>
-byte<N> operator| (const byte<N>& lhs, const byte<N>& rhs)
-{
-
-	byte<N> tmp = lhs;
-	tmp |= rhs;
-	return tmp;
-}
-
-template<size_t N>
-byte<N> operator^ (const byte<N>& lhs, const byte<N>& rhs)
-{
-	byte<N> tmp = lhs;
-	tmp ^= rhs;
-	return tmp;
 }
 
 //template<size_t N>
@@ -472,8 +285,6 @@ public:
 			return lower_first;
 		case 3:
 			return lower_second;
-		default:
-			break;
 		}
 	}
 };
@@ -508,33 +319,30 @@ public:
 		return return_reg_by_string(in);
 	}
 
-	registers mov_reg(const std::string &in, const unsigned long &out) {
-		if (out <= 255)
+	/*registers mov_reg(const std::string &in, int out) {
+		if (out >= -128 && out <= 127) {
 			return_reg_by_string(in).return_byte(3) = out;
-		else if (out <= 65535) {
-			return_reg_by_string(in).return_byte(3) = 255;
+		}
+		else if (out >= -32768 && out <= 32767) {
+			byte<2> tmp = out;
+			return_reg_by_string(in).return_byte(3) = 256;
 			return_reg_by_string(in).return_byte(2) = out - 256;
 		}
-		else if (out <= 16777215) {
-			return_reg_by_string(in).return_byte(3) = 255;
-			return_reg_by_string(in).return_byte(2) = 65535;
-			return_reg_by_string(in).return_byte(1) = out - 65536;
+		else if (out >= -8388608 && out <= 8388607) {
+
 		}
-		else if (out <= 4294967295) {
-			return_reg_by_string(in).return_byte(3) = 255;
-			return_reg_by_string(in).return_byte(2) = 65535;
-			return_reg_by_string(in).return_byte(1) = 16777215;
-			return_reg_by_string(in).return_byte(1) = out - 4294967296;
+		else if (out >= -214748368 && out <= 2147483647) {
+			
 		}
 		return return_reg_by_string(in);
-	}
+	}*/
 
 	byte<1> mov(const std::string &in, const std::string &out) {
 		return_by_string(in) = return_by_string(out);
 		return return_by_string(in);
 	}
 
-	byte<1> mov(const std::string &in, const unsigned long& out) {
+	byte<1> mov(const std::string &in, int out) {
 		return_by_string(in) = out;
 		return return_by_string(in);
 	}
@@ -544,7 +352,7 @@ public:
 		return return_by_string(in);
 	}
 
-	byte<1> add(const std::string &in, const unsigned long& out) {
+	byte<1> add(const std::string &in, int out) {
 		return_by_string(in) += out;
 		return return_by_string(in);
 	}
@@ -554,7 +362,7 @@ public:
 		return return_by_string(in);
 	}
 
-	byte<1> sub(const std::string &in, const unsigned long& out) {
+	byte<1> sub(const std::string &in, int out) {
 		return_by_string(in) -= out;
 		return return_by_string(in);
 	}
@@ -579,7 +387,7 @@ public:
 			else if (out == "EAX" || out == "EBX")
 				mov_reg(in, out);
 			else {
-				unsigned long i = std::atoi(out.c_str());
+				int i = std::atoi(out.c_str());
 				if (in == "EAX" || in == "EBX")
 					mov_reg(in, i);
 				if (in == "AH" || in == "BH" || in == "AL" || in == "BL")
@@ -594,7 +402,7 @@ public:
 			if (out == "AH" || out == "BH" || out == "AL" || out == "BL")
 				add(in, out);
 			else {
-				unsigned long i = std::atoi(out.c_str());
+				int i = std::atoi(out.c_str());
 				add(in, i);
 			}
 			return true;
@@ -605,7 +413,7 @@ public:
 			if (out == "AH" || out == "BH" || out == "AL" || out == "BL")
 				sub(in, out);
 			else {
-				unsigned long i = std::atoi(out.c_str());
+				int i = std::atoi(out.c_str());
 				sub(in, i);
 			}
 			return true;
@@ -638,22 +446,16 @@ public:
 
 int main()
 {
-	saver_registers one;
-	try {
-		std::string input;
-		while (input != "exit") {
-			system("cls");
-			std::cin >> input;
-			one.parser(input);
-			system("pause");
-		}
-	}
-	catch (size_t number) {
-		std::cout << number << std::endl;
-	}
-	/*byte<1> a(5);
-	byte<1> b(7);
-	byte<1> r(1);
-	r += a;;
-	std::cout  << a <<"|"<< r;*/
+	/*saver_registers one;
+	std::string input;
+	while (input != "exit") {
+		system("cls");
+		std::cin >> input;
+		one.parser(input);
+		system("pause");
+	}*/
+	
+	/*	byte<2> a(-15000);
+		std::cout << a.conc(0) << " | "<< a << std::endl;*/
+
 }
