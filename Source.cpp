@@ -9,24 +9,24 @@ std::ostream & operator<<(std::ostream &out, word &rhs)
 }
 int main()
 {
-	/*saver_registers one;
+	saver_registers one;
 	std::string input;
 	while (input != "exit") {
 		system("cls");
 		std::cin >> input;
 		one.parser(input);
 		system("pause");
-	}*/
+	}
 
 	
-	//	word a(60000);
-	//	a.setbit(15, 1);
+	//	word a(-32768);
+	//	//a.setbit(15, 1);
 	////	byte b(5);
 	//	//a += b;
 	//	std::cout << a << std::endl;
 	
 	
-	stack a;
+	/*stack a;
 	byte b(5);
 	byte c(7);
 
@@ -36,6 +36,6 @@ int main()
 	a.print_stack();
 
 	a.pop();
-	a.print_stack();
+	a.print_stack();*/
 
 }

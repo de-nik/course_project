@@ -26,23 +26,18 @@ registers saver_registers::mov_reg(const std::string &in, const std::string &out
 	return return_reg_by_string(in);
 }
 
-/*registers saver_registers::mov_reg(const std::string &in, int out) {
-if (out >= -128 && out <= 127) {
-return_reg_by_string(in).return_byte(3) = out;
+registers saver_registers::mov_reg(const std::string &in, int out) {
+	if (out >= -128 && out <= 127) {
+		return_reg_by_string(in).return_byte(3) = out;
+	}
+	else if (out >= -32768 && out <= 32767) {
+		word tmp = out;
+		return_reg_by_string(in).return_byte(3) = tmp.return_byte(0);
+		return_reg_by_string(in).return_byte(2) = tmp.return_byte(1);
+	}
+	
+	return return_reg_by_string(in);
 }
-else if (out >= -32768 && out <= 32767) {
-byte<2> tmp = out;
-return_reg_by_string(in).return_byte(3) = 256;
-return_reg_by_string(in).return_byte(2) = out - 256;
-}
-else if (out >= -8388608 && out <= 8388607) {
-
-}
-else if (out >= -214748368 && out <= 2147483647) {
-
-}
-return return_reg_by_string(in);
-}*/
 
 byte saver_registers::mov(const std::string &in, const std::string &out) {
 	return_by_string(in) = return_by_string(out);
@@ -56,7 +51,7 @@ byte saver_registers::mov(const std::string &in, int out) {
 
 byte saver_registers::add(const std::string &in, const std::string &out) {
 	return_by_string(in) += return_by_string(out);
-	return return_by_string(in); 
+	return return_by_string(in);
 }
 
 byte saver_registers::add(const std::string &in, int out) {
@@ -96,7 +91,7 @@ bool saver_registers::parser(const std::string &input) {
 		else {
 			int i = std::atoi(out.c_str());
 			if (in == "EAX" || in == "EBX") {
-				//mov_reg(in, i);
+				mov_reg(in, i);
 			}
 			if (in == "AH" || in == "BH" || in == "AL" || in == "BL")
 				mov(in, i);
