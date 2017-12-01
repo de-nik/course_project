@@ -35,7 +35,6 @@ registers saver_registers::mov_reg(const std::string &in, int out) {
 		return_reg_by_string(in).return_byte(3) = tmp.return_byte(0);
 		return_reg_by_string(in).return_byte(2) = tmp.return_byte(1);
 	}
-	
 	return return_reg_by_string(in);
 }
 
@@ -77,6 +76,16 @@ bool saver_registers::cmp(const std::string &in, const std::string &out) {
 	if (return_by_string(in) != return_by_string(out)) {
 		std::cout << "not eq" << std::endl;
 		return false;
+	}
+}
+void saver_registers::push(const std::string &in) {
+	Stack.push(return_by_string(in));
+}
+void saver_registers::pop(const std::string &in) {
+	if(Stack.return_pushed_top() == 1)
+		return_by_string(in) = Stack.pop();
+	else if (Stack.return_pushed_top() == 2) {
+
 	}
 }
 
@@ -125,6 +134,18 @@ bool saver_registers::parser(const std::string &input) {
 		std::string in, out;
 		std::cin >> in >> out;
 		cmp(in, out);
+		return true;
+	}
+	if (input == "push") {
+		std::string in;
+		std::cin >> in;
+		push(in);
+		return true;
+	}
+	if (input == "pop") {
+		std::string in;
+		std::cin >> in;
+		pop(in);
 		return true;
 	}
 	if (input == "out") {

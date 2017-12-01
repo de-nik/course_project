@@ -20,19 +20,12 @@ void stack::push(word &value)
 	pushed[pushed_top++] = 2;
 }
 
-byte stack::pop(const byte& ptr)
+byte stack::pop()
 {
-	--pushed_top;
-	return data[--top]; 
+		--pushed_top;
+		return data[--top];
 }
 
-word stack::pop(const word& ptr)
-{
-	word temp(data[top], data[top-1]);
-	top -= 2;
-	--pushed_top;
-	return temp;
-}
 
 void stack::print_stack()
 {
@@ -40,6 +33,6 @@ void stack::print_stack()
 		std::cout << "|" << std::setw(4) << data[i] << std::endl;
 }
 
-void stack::pop() {
-	pop(data[top]);
+size_t stack::return_pushed_top() {
+	return pushed_top;
 }
