@@ -61,7 +61,7 @@ byte saver_registers::mov(const std::string &in, int out) {
 
 byte saver_registers::add(const std::string &in, const std::string &out) {
 	return_by_string(in) += return_by_string(out);
-	return return_by_string(in);
+	return return_by_string(in); 
 }
 
 byte saver_registers::add(const std::string &in, int out) {
@@ -145,8 +145,11 @@ bool saver_registers::parser(const std::string &input) {
 	}
 	else if (input == "exit") throw false;
 	else {
-		std::cout << "unavailable command" << std::endl;
-		return true;
+		std::string ad_input;
+		std::cin >> ad_input;
+		if (ad_input == "dd") {
+
+		}
 	}
 }
 

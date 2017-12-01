@@ -2,11 +2,12 @@
 #include "header.h"
 #include "byte.h"
 #include "registers.h"
-
+#include "stack.h"
 class saver_registers
 {
 	registers EAX;
 	registers EBX;
+	stack Stack;
 public:
 	byte &return_by_string(const std::string &title);
 	registers &return_reg_by_string(const std::string &title);

@@ -27,19 +27,6 @@ int byte::to_int() const {
 
 }
 
-bool byte::getbit(int index) const
-{
-	return array_of_bytes >> index & 1;
-}
-
-void byte::setbit(int index, bool newval)
-{
-	if (newval)
-		array_of_bytes |= 1 << index;
-	else
-		array_of_bytes &= ~(1 << index);
-}
-
 byte::byte(int val)
 {
 	int tmp = val;
@@ -80,11 +67,6 @@ void byte::flip()
 	}
 }
 
-void byte::flip(size_t index)
-{
-	setbit(index, !getbit(index));
-}
-
 bool byte::operator== (const byte& rhs) const
 {
 	for (int i = 0; i < 8; ++i)
@@ -103,12 +85,6 @@ bool byte::operator!= (const byte& rhs) const
 			return true;
 	}
 	return false;
-}
-
-byte& byte::operator += (const byte& rhs) {
-	for (int i = 7; i >= 0; --i)
-		setbit(i, (rhs.getbit(i) != getbit(i)));
-	return *this;
 }
 
 byte& byte::operator += (int rhs) {
@@ -165,12 +141,6 @@ byte& byte::operator -= (int rhs) {
 	return *this;
 }
 
-byte& byte::operator =(const byte& rhs) {
-	for (size_t i = 0; i <= 7; ++i)
-		setbit(i, rhs.getbit(i));
-	return *this;
-}
-
 byte& byte::operator =(int val) {
 	reset();
 	int tmp = val;
@@ -195,7 +165,37 @@ byte& byte::operator =(int val) {
 	return *this;
 }
 
+byte& byte::operator += (const byte& rhs) {
+	for (int i = 7; i >= 0; --i)
+		setbit(i, (rhs.getbit(i) != getbit(i)));
+	return *this;
+}
+
+byte& byte::operator =(const byte& rhs) {
+	for (size_t i = 0; i <= 7; ++i)
+		setbit(i, rhs.getbit(i));
+	return *this;
+}
+
 byte::~byte() {
 
 }
 
+void byte::flip(size_t index)
+{
+	setbit(index, !getbit(index));
+}
+
+
+bool byte::getbit(int index) const
+{
+	return array_of_bytes >> index & 1;
+}
+
+void byte::setbit(int index, bool newval)
+{
+	if (newval)
+		array_of_bytes |= 1 << index;
+	else
+		array_of_bytes &= ~(1 << index);
+}
