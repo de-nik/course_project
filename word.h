@@ -3,7 +3,7 @@
 #include "byte.h"
 
 class word {
-	unsigned char array_of_bytes[2];
+	byte array_of_bytes[2];
 public:
 	word(int);
 	word();
@@ -22,5 +22,6 @@ public:
 	void flip();
 	bool getbit(int) const;
 	void setbit(int, bool);
-
+	byte return_byte(size_t);
+	word(const byte&, const byte&);
 };

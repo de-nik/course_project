@@ -22,5 +22,8 @@ public:
 	void flip();
 	bool getbit(int) const;
 	void setbit(int, bool);
+	unsigned char return_array() const; 
+	unsigned char &return_array();
 };
 
+std::ostream & operator<<(std::ostream &out, byte &rhs);

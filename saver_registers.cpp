@@ -1,11 +1,6 @@
 #include "saver_registers.h"
 
-std::ostream & operator<<(std::ostream &out, byte &rhs)
-{
-	for (int i = 7; i >= 0; --i)
-		out << rhs.getbit(i);
-	return out;
-}
+
 std::ostream & operator<<(std::ostream &out, registers &rhs)
 {
 	for (size_t i = 0; i < 4; ++i) {

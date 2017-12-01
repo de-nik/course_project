@@ -1,4 +1,12 @@
 #include "byte.h"
+
+std::ostream & operator<<(std::ostream &out, byte &rhs)
+{
+	for (int i = 7; i >= 0; --i)
+		out << rhs.getbit(i);
+	return out;
+}
+
 byte::byte() {
 	for (int i = 0; i < 8; ++i) {
 		setbit(i, 0);
@@ -198,4 +206,12 @@ void byte::setbit(int index, bool newval)
 		array_of_bytes |= 1 << index;
 	else
 		array_of_bytes &= ~(1 << index);
+}
+
+unsigned char byte::return_array() const{
+	return array_of_bytes;
+}
+
+unsigned char & byte::return_array() {
+	return array_of_bytes;
 }

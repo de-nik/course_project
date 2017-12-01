@@ -1,8 +1,7 @@
 #include "word.h"
 word::word() {
-	for (int i = 0; i < 16; ++i) {
-		setbit(i, 0);
-	}
+	array_of_bytes[0] = 0;
+	array_of_bytes[1] = 0;
 }
 
 int word::to_int() const {
@@ -190,23 +189,32 @@ void word::flip(size_t index)
 bool word::getbit(int index) const
 {
 	if(index < 8)
-		return array_of_bytes[0] >> index & 1;
+		return array_of_bytes[0].return_array() >> index & 1;
 	else 
-		return array_of_bytes[1] >> index - 8 & 1;
+		return array_of_bytes[1].return_array() >> index - 8 & 1;
 }
 
 void word::setbit(int index, bool newval)
 {
 	if (newval && index < 8) {
-		array_of_bytes[0] |= 1 << index;
+		array_of_bytes[0].return_array() |= 1 << index;
 	}
 	else if (newval && index > 7) {
-		array_of_bytes[1] |= 1 << index - 8;
+		array_of_bytes[1].return_array() |= 1 << index - 8;
 	}
 	else if (!newval && index < 8) {
-		array_of_bytes[0] &= ~(1 << index);
+		array_of_bytes[0].return_array() &= ~(1 << index);
 	}
 	else {
-		array_of_bytes[1] &= ~(1 << index - 8);
+		array_of_bytes[1].return_array() &= ~(1 << index - 8);
 	}
+}
+
+byte word::return_byte(size_t number) {
+	return array_of_bytes[number];
+}
+
+word::word(const byte& first, const byte& second) {
+	array_of_bytes[0] = first;
+	array_of_bytes[1] = second;
 }

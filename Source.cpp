@@ -19,15 +19,23 @@ int main()
 	}*/
 
 	
-		word a(60000);
-		a.setbit(15, 1);
-	//	byte b(5);
-		//a += b;
-		std::cout << a << std::endl;
+	//	word a(60000);
+	//	a.setbit(15, 1);
+	////	byte b(5);
+	//	//a += b;
+	//	std::cout << a << std::endl;
 	
 	
+	stack a;
+	byte b(5);
+	byte c(7);
 
-	
+	a.push(b);
+	a.push(c);
 
+	a.print_stack();
+
+	a.pop();
+	a.print_stack();
 
 }
