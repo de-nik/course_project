@@ -1,6 +1,7 @@
 #include "header.h"
 #include "saver_registers.h"
 #include "word.h"
+#include "dword.h"
 std::ostream & operator<<(std::ostream &out, word &rhs)
 {
 	for (int i = 15; i >= 0; --i)
@@ -19,12 +20,9 @@ int main()
 	}
 
 	
-	//	word a(-32768);
-	//	//a.setbit(15, 1);
-	////	byte b(5);
-	//	//a += b;
-	//	std::cout << a << std::endl;
-	
+		/*dword a(-2147483647);
+		std::cout << a << std::endl;
+	*/
 	
 	/*stack a;
 	byte b(5);

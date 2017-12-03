@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="byte.cpp" />
+    <ClCompile Include="dword.cpp" />
     <ClCompile Include="registers.cpp" />
     <ClCompile Include="saver_registers.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -155,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="byte.h" />
+    <ClInclude Include="dword.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="registers.h" />
     <ClInclude Include="saver_registers.h" />

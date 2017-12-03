@@ -12,3 +12,10 @@ byte& registers::return_byte(size_t option) {
 	}
 }
 
+std::ostream & operator<<(std::ostream &out, registers &rhs)
+{
+	for (size_t i = 0; i < 4; ++i) {
+		out << rhs.return_byte(i) << " : ";
+	}
+	return out;
+}

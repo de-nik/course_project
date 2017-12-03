@@ -2,6 +2,7 @@
 #include "header.h"
 #include "byte.h"
 #include "word.h"
+#include "dword.h"
 #include "registers.h"
 #include "stack.h"
 /*!
@@ -47,12 +48,17 @@ public:
 	byte add(const std::string &in, int out);
 	byte sub(const std::string &in, const std::string &out);
 	byte sub(const std::string &in, int out);
-	bool cmp(const std::string &in, const std::string &out);
+	bool cmp(const std::string &in, const std::string &out); 
+	void input_mov();
+	void input_add();
+	void input_sub();
+	void input_cmp();
 	bool parser(const std::string &input);
 	void push(const std::string &); 
 	void pop(const std::string &);
 
 };
 
+std::ostream & operator<<(std::ostream &out, registers &rhs);
 
 

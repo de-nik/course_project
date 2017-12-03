@@ -1,14 +1,5 @@
 #include "saver_registers.h"
 
-
-std::ostream & operator<<(std::ostream &out, registers &rhs)
-{
-	for (size_t i = 0; i < 4; ++i) {
-		out << rhs.return_byte(i) << " : ";
-	}
-	return out;
-}
-
 byte& saver_registers::return_by_string(const std::string &title) {
 	if (title == "AH") return EAX.return_byte(3);
 	else if (title == "AL") return EAX.return_byte(2);
@@ -27,14 +18,11 @@ registers saver_registers::mov_reg(const std::string &in, const std::string &out
 }
 
 registers saver_registers::mov_reg(const std::string &in, int out) {
-	if (out >= -128 && out <= 127) {
-		return_reg_by_string(in).return_byte(3) = out;
-	}
-	else if (out >= -32768 && out <= 32767) {
-		word tmp = out;
-		return_reg_by_string(in).return_byte(3) = tmp.return_byte(0);
-		return_reg_by_string(in).return_byte(2) = tmp.return_byte(1);
-	}
+	dword tmp = out;
+	return_reg_by_string(in).return_byte(3) = tmp.return_byte(0);
+	return_reg_by_string(in).return_byte(2) = tmp.return_byte(1);
+	return_reg_by_string(in).return_byte(1) = tmp.return_byte(2);
+	return_reg_by_string(in).return_byte(0) = tmp.return_byte(3);
 	return return_reg_by_string(in);
 }
 
@@ -82,58 +70,69 @@ void saver_registers::push(const std::string &in) {
 	Stack.push(return_by_string(in));
 }
 void saver_registers::pop(const std::string &in) {
-	if(Stack.return_pushed_top() == 1)
+	if (Stack.return_pushed_top() == 1)
 		return_by_string(in) = Stack.pop();
 	else if (Stack.return_pushed_top() == 2) {
 
 	}
 }
 
+void saver_registers::input_mov() {
+	std::string in, out;
+	std::cin >> in >> out;
+	if (out == "AH" || out == "BH" || out == "AL" || out == "BL")
+		mov(in, out);
+	else if (out == "EAX" || out == "EBX")
+		mov_reg(in, out);
+	else {
+		int i = std::atoi(out.c_str());
+		if (in == "EAX" || in == "EBX") {
+			mov_reg(in, i);
+		}
+		if (in == "AH" || in == "BH" || in == "AL" || in == "BL")
+			mov(in, i);
+	}
+}
+void saver_registers::input_add() {
+	std::string in, out;
+	std::cin >> in >> out;
+	if (out == "AH" || out == "BH" || out == "AL" || out == "BL")
+		add(in, out);
+	else {
+		int i = std::atoi(out.c_str());
+		add(in, i);
+	}
+}
+void saver_registers::input_sub() {
+	std::string in, out;
+	std::cin >> in >> out;
+	if (out == "AH" || out == "BH" || out == "AL" || out == "BL")
+		sub(in, out);
+	else {
+		int i = std::atoi(out.c_str());
+		sub(in, i);
+	}
+}
+void saver_registers::input_cmp() {
+	std::string in, out;
+	std::cin >> in >> out;
+	cmp(in, out);
+}
 bool saver_registers::parser(const std::string &input) {
 	if (input == "mov") {
-		std::string in, out;
-		std::cin >> in >> out;
-		if (out == "AH" || out == "BH" || out == "AL" || out == "BL")
-			mov(in, out);
-		else if (out == "EAX" || out == "EBX")
-			mov_reg(in, out);
-		else {
-			int i = std::atoi(out.c_str());
-			if (in == "EAX" || in == "EBX") {
-				mov_reg(in, i);
-			}
-			if (in == "AH" || in == "BH" || in == "AL" || in == "BL")
-				mov(in, i);
-		}
-
+		input_mov();
 		return true;
 	}
 	if (input == "add") {
-		std::string in, out;
-		std::cin >> in >> out;
-		if (out == "AH" || out == "BH" || out == "AL" || out == "BL")
-			add(in, out);
-		else {
-			int i = std::atoi(out.c_str());
-			add(in, i);
-		}
+		input_add();
 		return true;
 	}
 	if (input == "sub") {
-		std::string in, out;
-		std::cin >> in >> out;
-		if (out == "AH" || out == "BH" || out == "AL" || out == "BL")
-			sub(in, out);
-		else {
-			int i = std::atoi(out.c_str());
-			sub(in, i);
-		}
+		input_sub();
 		return true;
 	}
 	if (input == "cmp") {
-		std::string in, out;
-		std::cin >> in >> out;
-		cmp(in, out);
+		input_cmp();
 		return true;
 	}
 	if (input == "push") {
@@ -155,12 +154,5 @@ bool saver_registers::parser(const std::string &input) {
 		return true;
 	}
 	else if (input == "exit") throw false;
-	else {
-		std::string ad_input;
-		std::cin >> ad_input;
-		if (ad_input == "dd") {
-
-		}
-	}
 }
 
