@@ -67,14 +67,10 @@ bool saver_registers::cmp(const std::string &in, const std::string &out) {
 	}
 }
 void saver_registers::push(const std::string &in) {
-	Stack.push(return_by_string(in));
+	
 }
 void saver_registers::pop(const std::string &in) {
-	if (Stack.return_pushed_top() == 1)
-		return_by_string(in) = Stack.pop();
-	else if (Stack.return_pushed_top() == 2) {
-
-	}
+	
 }
 
 void saver_registers::input_mov() {

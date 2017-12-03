@@ -22,7 +22,7 @@ public:
 	void flip();
 	bool getbit(int) const;
 	void setbit(int, bool);
-	byte return_byte(size_t);
+	byte return_byte(size_t) const;
 	dword(const byte&, const byte&, const byte&, const byte&);
 };
 

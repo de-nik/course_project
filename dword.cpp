@@ -222,7 +222,7 @@ void dword::setbit(int index, bool newval)
 	}
 }
 
-byte dword::return_byte(size_t number) {
+byte dword::return_byte(size_t number) const{
 	return array_of_bytes[number];
 }
 
