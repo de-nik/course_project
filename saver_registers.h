@@ -3,7 +3,6 @@
 #include "byte.h"
 #include "word.h"
 #include "dword.h"
-#include "registers.h"
 #include "stack.h"
 /*!
 	\brief  ласс симул€ции
@@ -12,8 +11,8 @@
 	*/
 class saver_registers
 {
-	registers EAX;
-	registers EBX;
+	dword EAX;
+	dword EBX;
 	stack Stack;
 public:
 	/*!
@@ -26,21 +25,21 @@ public:
 
 	¬озвращает регистр по строке
 	*/
-	registers &return_reg_by_string(const std::string &title);
+	dword &return_reg_by_string(const std::string &title);
 	/*!
 	\brief ѕересылка данных
 		MOV приемник, источник 
 			Ѕазова€ команда пересылки данных.  опирует содержимое источника в приемник, источник не измен€етс€. 
 	\param регистр
 	*/
-	registers mov_reg(const std::string &in, const std::string &out);
+	dword mov_reg(const std::string &in, const std::string &out);
 	/*!
 	\brief ѕересылка данных
 		MOV приемник, источник
 			Ѕазова€ команда пересылки данных.  опирует содержимое источника в приемник, источник не измен€етс€.
 	\param регистр
 	*/
-	registers mov_reg(const std::string &in, int out);
+	dword mov_reg(const std::string &in, int out);
 
 	byte mov(const std::string &in, const std::string &out);
 	byte mov(const std::string &in, int out);
@@ -53,12 +52,12 @@ public:
 	void input_add();
 	void input_sub();
 	void input_cmp();
-	bool parser(const std::string &input);
+	bool parser(const std::string &);
 	void push(const std::string &); 
-	void pop(const std::string &);
+	void pop();
 
 };
 
-std::ostream & operator<<(std::ostream &out, registers &rhs);
+std::ostream & operator<<(std::ostream &out, dword &rhs);
 
 

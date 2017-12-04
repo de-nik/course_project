@@ -1,28 +1,24 @@
 #include "saver_registers.h"
 
 byte& saver_registers::return_by_string(const std::string &title) {
-	if (title == "AH") return EAX.return_byte(3);
-	else if (title == "AL") return EAX.return_byte(2);
-	else if (title == "BH") return EBX.return_byte(3);
-	else if (title == "BL") return EBX.return_byte(2);
+	if (title == "AH") return EAX.return_byte(0);
+	else if (title == "AL") return EAX.return_byte(1);
+	else if (title == "BH") return EBX.return_byte(0);
+	else if (title == "BL") return EBX.return_byte(1);
 }
 
-registers& saver_registers::return_reg_by_string(const std::string &title) {
+dword& saver_registers::return_reg_by_string(const std::string &title) {
 	if (title == "EAX") return EAX;
 	else if (title == "EBX") return EBX;
 }
 
-registers saver_registers::mov_reg(const std::string &in, const std::string &out) {
+dword saver_registers::mov_reg(const std::string &in, const std::string &out) {
 	return_reg_by_string(in) = return_reg_by_string(out);
 	return return_reg_by_string(in);
 }
 
-registers saver_registers::mov_reg(const std::string &in, int out) {
-	dword tmp = out;
-	return_reg_by_string(in).return_byte(3) = tmp.return_byte(0);
-	return_reg_by_string(in).return_byte(2) = tmp.return_byte(1);
-	return_reg_by_string(in).return_byte(1) = tmp.return_byte(2);
-	return_reg_by_string(in).return_byte(0) = tmp.return_byte(3);
+dword saver_registers::mov_reg(const std::string &in, int out) {
+	return_reg_by_string(in) = out;
 	return return_reg_by_string(in);
 }
 
@@ -67,10 +63,24 @@ bool saver_registers::cmp(const std::string &in, const std::string &out) {
 	}
 }
 void saver_registers::push(const std::string &in) {
-	
+	if (in == "AH" || in == "BH" || in == "AL" || in == "BL")
+		Stack.push(return_by_string(in));
+	if (in == "EAX" || in == "EBX") {
+		Stack.push(return_reg_by_string(in));
+	}
+	else {
+		dword temp = std::stoi(in);
+		Stack.push(temp);
+	}
 }
-void saver_registers::pop(const std::string &in) {
-	
+void saver_registers::pop() {	
+	std::string in;
+	std::cin >> in;
+	if (in == "AH" || in == "BH" || in == "AL" || in == "BL")
+		return_by_string(in) = Stack.pop();
+	if (in == "EAX" || in == "EBX") {
+		return_reg_by_string(in) = Stack.pop();
+	}
 }
 
 void saver_registers::input_mov() {
@@ -138,9 +148,7 @@ bool saver_registers::parser(const std::string &input) {
 		return true;
 	}
 	if (input == "pop") {
-		std::string in;
-		std::cin >> in;
-		pop(in);
+		pop();
 		return true;
 	}
 	if (input == "out") {

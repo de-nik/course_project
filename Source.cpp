@@ -10,21 +10,21 @@ std::ostream & operator<<(std::ostream &out, word &rhs)
 }
 int main()
 {
-	/*saver_registers one;
+	saver_registers one;
 	std::string input;
 	while (input != "exit") {
 		system("cls");
 		std::cin >> input;
 		one.parser(input);
 		system("pause");
-	}*/
+	}
 
 	
 		/*dword a(-2147483647);
 		std::cout << a << std::endl;
 	*/
 	
-	stack a;
+	/*stack a;
 	dword b(1);
 	word c(2);
 	byte d(-3);
@@ -38,7 +38,7 @@ int main()
 	a.print_stack();
 	std::cout << a.pop() << std::endl;
 	a.print_electors();
-	a.print_stack();
+	a.print_stack();*/
 	//std::cout << a.pop() << std::endl;
 	//a.print_electors();
 	//a.print_stack();

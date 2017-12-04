@@ -230,7 +230,9 @@ void dword::setbit(int index, bool newval)
 byte dword::return_byte(size_t number) const{
 	return array_of_bytes[number];
 }
-
+byte & dword::return_byte(size_t number) {
+	return array_of_bytes[number];
+}
 dword::dword(const byte& first, const byte& second, const byte& third, const byte& fourth) {
 	array_of_bytes[0] = first;
 	array_of_bytes[1] = second;
@@ -240,7 +242,7 @@ dword::dword(const byte& first, const byte& second, const byte& third, const byt
 
 std::ostream & operator<<(std::ostream &out, dword &rhs)
 {
-	for (int i = 31; i >= 0; --i)
-		out << rhs.getbit(i);
+	for (int i = 3; i >= 0; --i)
+		out << rhs.return_byte(i) << " : ";
 	return out;
 }

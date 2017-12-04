@@ -23,6 +23,7 @@ public:
 	bool getbit(int) const;
 	void setbit(int, bool);
 	byte return_byte(size_t) const;
+	byte & return_byte(size_t);
 	dword(const byte&, const byte&, const byte&, const byte&);
 };
 
