@@ -6,24 +6,29 @@ dword::dword() {
 
 int dword::to_int() const {
 	int res = 0;
-
-	if (getbit(0)) {
-		++res;
-		for (int i = 0; i < 32; ++i) {
-			if (!getbit(i))
-				res += (int)pow(2, 31 - i);
+	dword temp = *this;
+	if (getbit(31)) {
+		if (getbit(0))
+			for (int i = 31; !getbit(31 - i); --i)
+			{
+				temp.flip(32 - i);
+			}
+		temp.flip(0);
+		temp.flip();
+		for (int i = 0; i <= 31; ++i) {
+			if (temp.getbit(i))
+				res += (int)pow(2, i);
 		}
 		return -res;
 	}
 
 	else {
-		for (int i = 32 - 1; i > 0; --i) {
+		for (int i = 0; i <= 31; ++i) {
 			if (getbit(i))
-				res += (int)pow(2, 31 - i);
+				res += (int)pow(2, i);
 		}
 	}
 	return res;
-
 }
 
 dword::dword(int val)

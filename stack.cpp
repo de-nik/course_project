@@ -161,60 +161,92 @@ void stack::kill_elector(int number) {
 	}
 }
 
-void stack::elections(int electors_choise) {
+int stack::make_dword() {
+	dword dw(data[size - 4], data[size - 3], data[size - 2], data[size - 1]);
+	int temp = dw.to_int();
+	return temp;
+}
+
+int stack::make_word() {
+	word dw(data[size - 2], data[size - 1]);
+	int temp = dw.to_int();
+	return temp;
+}
+
+int stack::make_byte() {
+	byte dw;
+	dw = data[size - 1];
+	int temp = dw.to_int();
+	return temp;
+}
+
+int stack::elections(int electors_choise) {
+	int temp(0);
 	switch (electors_choise) {
 	case 28:
+		temp = make_dword();
 		dec_data(4);
 		kill_elector(electors_choise);
-		break;
+		return temp;
 	case 15:
+		temp = make_word();
 		dec_data(2);
 		kill_elector(electors_choise);
-		break;
+		return temp;
 	case 13:
+		temp = make_byte();
 		dec_data(1);
 		kill_elector(electors_choise);
-		break;
+		return temp;
 	case 20:
+		temp = make_dword();
 		dec_data(4);
 		kill_elector(electors_choise);
-		break;
+		return temp;
 	case 11:
+		temp = make_word();
 		dec_data(2);
 		kill_elector(electors_choise);
-		break;
+		return temp;
 	case 9:
+		temp = make_byte();
 		dec_data(1);
 		kill_elector(electors_choise);
-		break;
+		return temp;
 	case 12:
+		temp = make_dword();
 		dec_data(4);
 		kill_elector(electors_choise);
-		break;
+		return temp;
 	case 7:
+		temp = make_word();
 		dec_data(2);
 		kill_elector(electors_choise);
-		break;
+		return temp;
 	case 5:
+		temp = make_byte();
 		dec_data(1);
 		kill_elector(electors_choise);
-		break;
+		return temp;
 	case 4:
+		temp = make_dword();
 		dec_data(4);
 		kill_electors();
-		break;
+		return temp;
 	case 3:
+		temp = make_word();
 		dec_data(2);
 		kill_electors();
-		break;
+		return temp;
 	case 1:
+		temp = make_byte();
 		dec_data(1);
 		kill_electors();
-		break;
+		return temp;
 	}
 }
 
-void stack::pop()
+int stack::pop()
 {
 	int flag(0), w(0);
 	for (int i = 7; i >= 0; --i) {
@@ -223,8 +255,7 @@ void stack::pop()
 			flag += (2*i + 1);
 		}
 		if (w == 2 && flag != 0) {
-			elections(flag);
-			break;
+			return elections(flag);
 		}
 		else if (w == 2 && flag == 0) {
 			w = 0;

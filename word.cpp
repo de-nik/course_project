@@ -6,24 +6,29 @@ word::word() {
 
 int word::to_int() const {
 	int res = 0;
-
-	if (getbit(0)) {
-		++res;
-		for (int i = 0; i < 16; ++i) {
-			if (!getbit(i))
-				res += (int)pow(2, 15 - i);
+	word temp = *this;
+	if (getbit(15)) {
+		if (getbit(0))
+			for (int i = 15; !getbit(15 - i); --i)
+			{
+				temp.flip(16 - i);
+			}
+		temp.flip(0);
+		temp.flip();
+		for (int i = 0; i <= 15; ++i) {
+			if (temp.getbit(i))
+				res += (int)pow(2, i);
 		}
 		return -res;
 	}
 
 	else {
-		for (int i = 16 - 1; i > 0; --i) {
+		for (int i = 0; i <= 15; ++i) {
 			if (getbit(i))
-				res += (int)pow(2, 15 - i);
+				res += (int)pow(2, i);
 		}
 	}
 	return res;
-
 }
 
 word::word(int val)

@@ -15,20 +15,26 @@ byte::byte() {
 
 int byte::to_int() const {
 	int res = 0;
-
-	if (getbit(0)) {
-		++res;
-		for (int i = 0; i < 8; ++i) {
-			if (!getbit(i))
-				res += (int)pow(2, 7 - i);
+	byte temp = *this;
+	if (getbit(7)) {
+		if (getbit(0))
+			for (int i = 7; !getbit(7 - i); --i)
+			{
+				temp.flip(8 - i);
+			}
+		temp.flip(0);
+		temp.flip();
+		for (int i = 0; i <= 7; ++i) {
+			if (temp.getbit(i))
+				res += (int)pow(2, i);
 		}
 		return -res;
 	}
 
 	else {
-		for (int i = 8 - 1; i > 0; --i) {
+		for (int i = 0; i <= 7 ; ++i) {
 			if (getbit(i))
-				res += (int)pow(2, 7 - i);
+				res += (int)pow(2, i);
 		}
 	}
 	return res;

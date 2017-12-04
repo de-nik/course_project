@@ -17,11 +17,15 @@ public:
 	void push(const dword &);
 	void push(const word &);
 	//void push(word &);
-	void pop();
+	int pop();
 	void print_stack();
-	void elections(int);
+	int elections(int);
 	void kill_electors();
 	void kill_elector(int);
 	void dec_data(int);
 	void print_electors();
+	int make_dword();
+	int make_word();
+	int make_byte();
+
 };
