@@ -25,12 +25,15 @@ int main()
 	*/
 	
 	stack a;
-	dword e(1);
-	dword b(2);
-	dword c(3);
-	a.push(e);
+	dword b(1);
+	word c(2);
+	byte d(3);
 	a.push(b);
 	a.push(c);
+	a.push(d);
+	a.print_electors();
+	a.print_stack();
+	a.pop();
 	a.print_electors();
 	a.print_stack();
 	/*for (size_t i = 0; i < 32; ++i)
