@@ -218,7 +218,9 @@ void word::setbit(int index, bool newval)
 byte word::return_byte(size_t number) const {
 	return array_of_bytes[number];
 }
-
+byte & word::return_byte(size_t number) {
+	return array_of_bytes[number];
+}
 word::word(const byte& first, const byte& second) {
 	array_of_bytes[0] = first;
 	array_of_bytes[1] = second;
