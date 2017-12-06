@@ -148,17 +148,17 @@
   <ItemGroup>
     <ClCompile Include="byte.cpp" />
     <ClCompile Include="dword.cpp" />
-    <ClCompile Include="saver_registers.cpp" />
+    <ClCompile Include="ROM.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="stack.cpp" />
+    <ClCompile Include="RAM.cpp" />
     <ClCompile Include="word.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="byte.h" />
     <ClInclude Include="dword.h" />
     <ClInclude Include="header.h" />
-    <ClInclude Include="saver_registers.h" />
-    <ClInclude Include="stack.h" />
+    <ClInclude Include="ROM.h" />
+    <ClInclude Include="RAM.h" />
     <ClInclude Include="word.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

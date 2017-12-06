@@ -4,13 +4,13 @@
 #include "word.h"
 #include "dword.h"
 
-class stack {
+class RAM {
 	byte *data;
 	int size;
 	byte *elector;
 	int size_elector;
 public:
-	stack();
+	RAM();
 	void inc_electors();
 	void inc_data(int);
 	void push(const byte &);

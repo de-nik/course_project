@@ -1,8 +1,8 @@
-#include "stack.h"
+#include "RAM.h"
 
-stack::stack() : size(0), size_elector(0) { }
+RAM::RAM() : size(0), size_elector(0) { }
 
-void stack::inc_electors() {
+void RAM::inc_electors() {
 	byte *temp_elector = new byte[size_elector];
 	for (int i = 0; i <= size_elector - 1; ++i)
 		temp_elector[i] = elector[i];
@@ -13,7 +13,7 @@ void stack::inc_electors() {
 	delete[]temp_elector;
 }
 
-void stack::inc_data(int count) {
+void RAM::inc_data(int count) {
 	byte *temp_data = new byte[size];
 	for (int i = 0; i <= size - 1; ++i)
 		temp_data[i] = data[i];
@@ -25,7 +25,7 @@ void stack::inc_data(int count) {
 	delete[]temp_data;
 }
 
-void stack::push(const byte &value)
+void RAM::push(const byte &value)
 {
 	if (data == nullptr) {
 		data = new byte[++size];
@@ -52,7 +52,7 @@ void stack::push(const byte &value)
 	}
 }
 
-void stack::push(const word &value)
+void RAM::push(const word &value)
 {
 	if (data == nullptr) {
 		size += 4;
@@ -83,7 +83,7 @@ void stack::push(const word &value)
 	}
 }
 
-void stack::push(const dword &value)
+void RAM::push(const dword &value)
 {
 	if (data == nullptr) {
 		size += 4;
@@ -119,7 +119,7 @@ void stack::push(const dword &value)
 	}
 }
 
-void stack::kill_electors() {
+void RAM::kill_electors() {
 		byte *temp_elector = new byte[size_elector];
 		for (int i = 0; i <= size_elector - 2; ++i)
 			temp_elector[i] = elector[i];
@@ -130,7 +130,7 @@ void stack::kill_electors() {
 		delete[]temp_elector;
 }
 
-void stack::dec_data(int count){
+void RAM::dec_data(int count){
 	byte *temp_data = new byte[size];
 	for (int i = 0; i <= size - 1 - count; ++i)
 		temp_data[i] = data[i];
@@ -142,7 +142,7 @@ void stack::dec_data(int count){
 	delete[]temp_data;
 }
 
-void stack::kill_elector(int number) {
+void RAM::kill_elector(int number) {
 	if (number == 28 || number == 15 || number == 13) {
 		elector[size_elector - 1].setbit(7, 0);
 		elector[size_elector - 1].setbit(6, 0);
@@ -161,26 +161,26 @@ void stack::kill_elector(int number) {
 	}
 }
 
-int stack::make_dword() {
+int RAM::make_dword() {
 	dword dw(data[size - 4], data[size - 3], data[size - 2], data[size - 1]);
 	int temp = dw.to_int();
 	return temp;
 }
 
-int stack::make_word() {
+int RAM::make_word() {
 	word dw(data[size - 2], data[size - 1]);
 	int temp = dw.to_int();
 	return temp;
 }
 
-int stack::make_byte() {
+int RAM::make_byte() {
 	byte dw;
 	dw = data[size - 1];
 	int temp = dw.to_int();
 	return temp;
 }
 
-int stack::elections(int electors_choise) {
+int RAM::elections(int electors_choise) {
 	int temp(0);
 	switch (electors_choise) {
 	case 28:
@@ -246,7 +246,7 @@ int stack::elections(int electors_choise) {
 	}
 }
 
-int stack::pop()
+int RAM::pop()
 {
 	int flag(0), w(0);
 	for (int i = 7; i >= 0; --i) {
@@ -263,13 +263,13 @@ int stack::pop()
 	}
 }
 
-void stack::print_stack()
+void RAM::print_stack()
 {
 	for (int i = size - 1; i >= 0; i--)
 		std::cout << "data[" << i << "] : " << data[i] << std::endl;
 }
 
-void stack::print_electors()
+void RAM::print_electors()
 {
 	for (int i = size_elector - 1; i >= 0; i--)
 		std::cout  << elector[i] << std::endl;

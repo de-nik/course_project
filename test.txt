@@ -1,9 +1,6 @@
 mov AH 7
-
 mov BH AH
-
-
 push AH
 pop DL
-
+add AL BH
 out

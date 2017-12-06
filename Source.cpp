@@ -1,5 +1,5 @@
 #include "header.h"
-#include "saver_registers.h"
+#include "ROM.h"
 #include "word.h"
 #include "dword.h"
 std::ostream & operator<<(std::ostream &out, word &rhs)
@@ -11,7 +11,7 @@ std::ostream & operator<<(std::ostream &out, word &rhs)
 
 int main()
 {
-	saver_registers one;
+	ROM one;
 	std::string input;
 	while (input != "exit") {
 		std::cout << "List of avaible command: " << std::endl << "mov, add, sub, cmp, push, pop, out, open" << std::endl;

@@ -3,19 +3,19 @@
 #include "byte.h"
 #include "word.h"
 #include "dword.h"
-#include "stack.h"
+#include "RAM.h"
 /*!
 	\brief Класс симуляции
 
 	Реализация работы с регистрами и обратока входящих данных
 	*/
-class saver_registers
+class ROM
 {
 	dword EAX;
 	dword EBX;
 	dword ECX;
 	dword EDX;
-	stack Stack;
+	RAM Stack;
 public:
 	/*!
 	\brief Возврат значения
@@ -59,8 +59,9 @@ public:
 	void pop(const std::string &);
 	bool validator_parts(const std::string &);
 	bool validator_reg(const std::string &);
-	void file_parser();
-
+	bool validator_command(const std::string &);
+	bool file_parser();
+	int comp(std::ifstream &);
 };
 
 std::ostream & operator<<(std::ostream &out, dword &rhs);
