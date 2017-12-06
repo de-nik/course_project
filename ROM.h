@@ -61,7 +61,7 @@ public:
 	bool validator_reg(const std::string &);
 	bool validator_command(const std::string &);
 	bool file_parser();
-	int comp(std::ifstream &);
+	int comp(const std::string &);
 };
 
 std::ostream & operator<<(std::ostream &out, dword &rhs);

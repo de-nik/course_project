@@ -190,7 +190,8 @@ bool ROM::validator_command(const std::string &in) {
 	else return false;
 }
 
-int ROM::comp(std::ifstream &file) {
+int ROM::comp(const std::string &input) {
+	std::ifstream file(input);
 	int count = 0;
 	std::string in, out;
 	for (file >> in; !file.eof(); file >> in) {
@@ -202,24 +203,14 @@ int ROM::comp(std::ifstream &file) {
 		else if (in == "push" || in == "pop") {
 			file >> in;
 		}
-		else if (in == "out" || in == "open") {}
+		else if (in == "out") {}
+		else if (in == "open") {
+			file >> in;
+		}
 		else {
 			std::cout << "Unknown command: <" << in << "> in string " << count << std::endl;
 			return false;
 		}
-	}
-	++count;
-	if (in == "mov" || in == "add" || in == "sub" || in == "cmp") {
-		file >> in;
-		file >> out;
-	}
-	else if (in == "push" || in == "pop") {
-		file >> in;
-	}
-	else if (in == "out" || in == "open") {}
-	else {
-		std::cout << "Unknown command: <" << in << "> in string " << count << std::endl;
-		return false;
 	}
 	std::cout << "comp. completed. Strings in file: " << count << std::endl;
 	return count;
@@ -236,9 +227,8 @@ bool ROM::file_parser() {
 	file.seekg(0, std::ios_base::end);
 	std::cout << "Opened file. File size: " << file.tellg() << std::endl;
 	file.seekg(0, std::ios_base::beg);
-	if (comp(file)) {
+	if (comp(in)) {
 		std::cout << "\nRunning...\n";
-		file.seekg(0, std::ios_base::beg);
 		for (file >> in; !file.eof(); file >> in) {
 			if (in == "mov") {
 				file >> in;
@@ -277,43 +267,6 @@ bool ROM::file_parser() {
 			else if (in == "open") {
 				file_parser();
 			}
-		}
-		if (in == "mov") {
-			file >> in;
-			file >> out;
-			input_mov(in, out);
-		}
-		else if (in == "add") {
-			file >> in;
-			file >> out;
-			input_add(in, out);
-		}
-		else if (in == "sub") {
-			file >> in;
-			file >> out;
-			input_sub(in, out);
-		}
-		else if (in == "cmp") {
-			file >> in;
-			file >> out;
-			input_cmp(in, out);
-		}
-		else if (in == "push") {
-			file >> in;
-			push(in);
-		}
-		else if (in == "pop") {
-			file >> in;
-			pop(in);
-		}
-		else if (in == "out") {
-			std::cout << "EAX: " << EAX << std::endl <<
-				"EBX: " << EBX << std::endl <<
-				"ECX: " << ECX << std::endl <<
-				"EDX: " << EDX << std::endl << std::endl;
-		}
-		else if (in == "open") {
-			file_parser();
 		}
 		std::cout << "Finished.\n";
 		return true;
