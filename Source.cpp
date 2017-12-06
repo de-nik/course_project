@@ -8,15 +8,17 @@ std::ostream & operator<<(std::ostream &out, word &rhs)
 		out << rhs.getbit(i);
 	return out;
 }
+
 int main()
 {
 	saver_registers one;
 	std::string input;
 	while (input != "exit") {
-		system("cls");
+		std::cout << "List of avaible command: " << std::endl << "mov, add, sub, cmp, push, pop, out, open" << std::endl;
 		std::cin >> input;
 		one.parser(input);
 		system("pause");
+		system("cls");
 	}
 
 	

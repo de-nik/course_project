@@ -13,6 +13,8 @@ class saver_registers
 {
 	dword EAX;
 	dword EBX;
+	dword ECX;
+	dword EDX;
 	stack Stack;
 public:
 	/*!
@@ -48,13 +50,16 @@ public:
 	byte sub(const std::string &in, const std::string &out);
 	byte sub(const std::string &in, int out);
 	bool cmp(const std::string &in, const std::string &out); 
-	void input_mov();
-	void input_add();
-	void input_sub();
-	void input_cmp();
+	void input_mov(const std::string &, const std::string &);
+	void input_add(const std::string &, const std::string &);
+	void input_sub(const std::string &, const std::string &);
+	void input_cmp(const std::string &, const std::string &);
 	bool parser(const std::string &);
 	void push(const std::string &); 
-	void pop();
+	void pop(const std::string &);
+	bool validator_parts(const std::string &);
+	bool validator_reg(const std::string &);
+	void file_parser();
 
 };
 

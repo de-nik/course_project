@@ -196,7 +196,7 @@ bool word::getbit(int index) const
 	if(index < 8)
 		return array_of_bytes[0].return_array() >> index & 1;
 	else 
-		return array_of_bytes[1].return_array() >> index - 8 & 1;
+		return array_of_bytes[1].return_array() >> (index - 8) & 1;
 }
 
 void word::setbit(int index, bool newval)
@@ -211,7 +211,7 @@ void word::setbit(int index, bool newval)
 		array_of_bytes[0].return_array() &= ~(1 << index);
 	}
 	else {
-		array_of_bytes[1].return_array() &= ~(1 << index - 8);
+		array_of_bytes[1].return_array() &= ~(1 << (index - 8));
 	}
 }
 
