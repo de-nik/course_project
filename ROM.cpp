@@ -195,60 +195,28 @@ int ROM::comp(std::ifstream &file) {
 	std::string in, out;
 	for (file >> in; !file.eof(); file >> in) {
 		++count;
-		if (in == "mov") {
+		if (in == "mov" || in == "add" || in == "sub" || in == "cmp") {
 			file >> in;
 			file >> out;
 		}
-		else if (in == "add") {
-			file >> in;
-			file >> out;
-		}
-		else if (in == "sub") {
-			file >> in;
-			file >> out;
-		}
-		else if (in == "cmp") {
-			file >> in;
-			file >> out;
-		}
-		else if (in == "push") {
+		else if (in == "push" || in == "pop") {
 			file >> in;
 		}
-		else if (in == "pop") {
-			file >> in;
-		}
-		else if (in == "out") {}
-		else if (in == "open") {}
+		else if (in == "out" || in == "open") {}
 		else {
 			std::cout << "Unknown command: <" << in << "> in string " << count << std::endl;
 			return false;
 		}
 	}
 	++count;
-	if (in == "mov") {
+	if (in == "mov" || in == "add" || in == "sub" || in == "cmp") {
 		file >> in;
-		file >> out;	
+		file >> out;
 	}
-	else if (in == "add") {
+	else if (in == "push" || in == "pop") {
 		file >> in;
-		file >> out;	
 	}
-	else if (in == "sub") {
-		file >> in;
-		file >> out;	
-	}
-	else if (in == "cmp") {
-		file >> in;
-		file >> out;	
-	}
-	else if (in == "push") {
-		file >> in;	
-	}
-	else if (in == "pop") {
-		file >> in;	
-	}
-	else if (in == "out") {}
-	else if (in == "open") {}
+	else if (in == "out" || in == "open") {}
 	else {
 		std::cout << "Unknown command: <" << in << "> in string " << count << std::endl;
 		return false;
