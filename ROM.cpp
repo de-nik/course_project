@@ -54,18 +54,18 @@ void ROM::sub(const std::string &in, int out, int type) {
 }
 void ROM::xor(const std::string &in, const std::string &out, int type) {
 	if (type) 
-		return_by_string(in) &= return_by_string(out);
+		return_by_string(in) ^= return_by_string(out);
 	else 
-		return_reg_by_string(in) &= return_reg_by_string(out);
+		return_reg_by_string(in) ^= return_reg_by_string(out);
 }
 void ROM::xor(const std::string &in, int out, int type) {
 	if (type) {
 		byte temp(out);
-		return_by_string(in) &= temp;
+		return_by_string(in) ^= temp;
 	}
 	else {
 		dword temp(out);
-		return_reg_by_string(in) &= temp;
+		return_reg_by_string(in) ^= temp;
 	}
 }
 bool ROM::cmp(const std::string &in, const std::string &out) {
@@ -73,9 +73,25 @@ bool ROM::cmp(const std::string &in, const std::string &out) {
 		std::cout << "eq" << std::endl;
 		return true;
 	}
-	else if (return_by_string(in) != return_by_string(out)) {
+	else  {
 		std::cout << "not eq" << std::endl;
 		return false;
+	}
+}
+void ROM::and (const std::string &in, const std::string &out, int type) {
+	if (type)
+		return_by_string(in) &= return_by_string(out);
+	else
+		return_reg_by_string(in) &= return_reg_by_string(out);
+}
+void ROM::and (const std::string &in, int out, int type) {
+	if (type) {
+		byte temp(out);
+		return_by_string(in) &= temp;
+	}
+	else {
+		dword temp(out);
+		return_reg_by_string(in) &= temp;
 	}
 }
 void ROM::push(const std::string &in) {
@@ -124,6 +140,20 @@ void ROM::input_xor(const std::string &in, const std::string &out) {
 			xor(in, i, 1);
 	}
 }
+void ROM::input_and(const std::string &in, const std::string &out) {
+	if (validator_parts(out))
+		and(in, out, 1);
+	else if (validator_reg(out))
+		and(in, out, 0);
+	else {
+		int i = std::atoi(out.c_str());
+		if (validator_reg(in)) {
+			and(in, i, 0);
+		}
+		else if (validator_parts(in))
+			and(in, i, 1);
+	}
+}
 void ROM::input_add(const std::string &in, const std::string &out) {
 	if (validator_parts(out))
 		add(in, out, 1);
@@ -152,8 +182,8 @@ void ROM::input_sub(const std::string &in, const std::string &out) {
 			sub(in, i, 1);
 	}
 }
-void ROM::input_cmp(const std::string &in, const std::string &out) {
-	cmp(in, out);
+bool ROM::input_cmp(const std::string &in, const std::string &out) {
+	return cmp(in, out);
 }
 bool ROM::parser(const std::string &input) {
 	if (input == "mov") {
@@ -184,6 +214,12 @@ bool ROM::parser(const std::string &input) {
 		std::string in, out;
 		std::cin >> in >> out;
 		input_xor(in, out);
+		return true;
+	}
+	else if (input == "and") {
+		std::string in, out;
+		std::cin >> in >> out;
+		input_and(in, out);
 		return true;
 	}
 	else if (input == "push") {
@@ -227,23 +263,21 @@ bool ROM::validator_command(const std::string &in) {
 		return true;
 	else return false;
 }
+
 int ROM::comp(const std::string &input) {
 	std::ifstream file(input);
 	int count = 0;
 	std::string in, out;
 	for (file >> in; !file.eof(); file >> in) {
 		++count;
-		if (in == "mov" || in == "add" || in == "sub" || in == "cmp" || in == "xor") {
+		if (in == "mov" || in == "add" || in == "sub" || in == "cmp" || in == "xor" || in == "and") {
 			file >> in;
 			file >> out;
 		}
-		else if (in == "push" || in == "pop") {
+		else if (in == "push" || in == "pop" || in == "open") {
 			file >> in;
 		}
-		else if (in == "out") {}
-		else if (in == "open") {
-			file >> in;
-		}
+		else if (in == "out" || in == "jmp" || in == "jne" || in == "label") {}
 		else {
 			std::cout << "Unknown command: <" << in << "> in string " << count << std::endl;
 			return false;
@@ -253,7 +287,8 @@ int ROM::comp(const std::string &input) {
 	return count;
 }
 bool ROM::file_parser() {
-	std::string in, out;
+	std::string in, out, label;
+	int lbl = 0;
 	std::cin >> in;
 	std::ifstream file(in);
 	if (!file.is_open()) {
@@ -284,12 +319,26 @@ bool ROM::file_parser() {
 			else if (in == "cmp") {
 				file >> in;
 				file >> out;
-				input_cmp(in, out);
+				file >> label;
+				int temp = file.tellg();
+				if (label == "jne") {
+					if (input_cmp(in, out)) {
+						file.seekg(-((int)file.tellg() - lbl), std::ios_base::cur);
+					}
+				}
+				else {
+					file.seekg(-((int)file.tellg() - temp), std::ios_base::cur);
+				}
 			}
 			else if (in == "xor") {
 				file >> in;
 				file >> out;
 				input_xor(in, out);
+			}
+			else if (in == "and") {
+				file >> in;
+				file >> out;
+				input_and(in, out);
 			}
 			else if (in == "push") {
 				file >> in;
@@ -298,6 +347,12 @@ bool ROM::file_parser() {
 			else if (in == "pop") {
 				file >> in;
 				pop(in);
+			}
+			else if (in == "label") {
+				lbl = file.tellg();
+			}
+			else if (in == "jmp") {
+				file.seekg(-((int)file.tellg() - lbl), std::ios_base::cur);
 			}
 			else if (in == "out") {
 				std::cout << "EAX: " << EAX << std::endl <<

@@ -25,5 +25,7 @@ public:
 	byte return_byte(size_t) const;
 	byte & return_byte(size_t);
 	word(const byte&, const byte&);
+	word& operator ^=(const word&);
 	word& operator &=(const word&);
+
 };

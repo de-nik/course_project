@@ -116,6 +116,7 @@ public:
 	Возврат для изменения по ссылке
 	*/
 	unsigned char &return_array();
+	byte& operator ^=(const byte&);
 	byte& operator &=(const byte&);
 };
 

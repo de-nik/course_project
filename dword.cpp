@@ -247,13 +247,23 @@ std::ostream & operator<<(std::ostream &out, dword &rhs)
 	return out;
 }
 
-dword& dword::operator&=(const dword& in) {
+dword& dword::operator^=(const dword& in) {
 	for (int i = 31; i >= 0; --i) {
 		if (in.getbit(i) == getbit(i)) {
 			setbit(i, 0);
 		}
 		else
 			setbit(i, 1);
+	}
+	return *this;
+}
+dword& dword::operator&=(const dword& in) {
+	for (int i = 31; i >= 0; --i) {
+		if (in.getbit(i) == 1 && getbit(i) == 1) {
+			setbit(i, 1);
+		}
+		else
+			setbit(i, 0);
 	}
 	return *this;
 }

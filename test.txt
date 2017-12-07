@@ -1,5 +1,7 @@
 mov AH 7
-mov BH 5
+mov BH 6
+label
 out
-xor AH BH
-out
+add BH 1
+cmp AH BH
+jne

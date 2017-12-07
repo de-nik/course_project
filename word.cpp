@@ -225,13 +225,24 @@ word::word(const byte& first, const byte& second) {
 	array_of_bytes[0] = first;
 	array_of_bytes[1] = second;
 }
-word& word::operator&=(const word& in) {
+word& word::operator^=(const word& in) {
 	for (int i = 15; i >= 0; --i) {
 		if (in.getbit(i) == getbit(i)) {
 			setbit(i, 0);
 		}
 		else
 			setbit(i, 1);
+	}
+	return *this;
+}
+
+word& word::operator&=(const word& in) {
+	for (int i = 15; i >= 0; --i) {
+		if (in.getbit(i) == 1 && getbit(i) == 1) {
+			setbit(i, 1);
+		}
+		else
+			setbit(i, 0);
 	}
 	return *this;
 }
