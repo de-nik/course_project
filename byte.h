@@ -107,7 +107,6 @@ public:
 	void setbit(int, bool);
 	/*!
 	\brief Возврат значения
-
 	
 	*/
 	unsigned char return_array() const;
@@ -117,6 +116,7 @@ public:
 	Возврат для изменения по ссылке
 	*/
 	unsigned char &return_array();
+	byte& operator &=(const byte&);
 };
 
 std::ostream & operator<<(std::ostream &out, byte &rhs);

@@ -25,6 +25,7 @@ public:
 	byte return_byte(size_t) const;
 	byte & return_byte(size_t);
 	dword(const byte&, const byte&, const byte&, const byte&);
+	dword& operator &=(const dword&);
 };
 
 std::ostream & operator<<(std::ostream &out, dword &rhs);

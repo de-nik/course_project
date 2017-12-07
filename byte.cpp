@@ -221,3 +221,14 @@ unsigned char byte::return_array() const{
 unsigned char & byte::return_array() {
 	return array_of_bytes;
 }
+
+byte& byte::operator&=(const byte& in) {
+	for (int i = 7; i >= 0; --i) {
+		if (in.getbit(i) == getbit(i)) {
+			setbit(i, 0);
+		}
+		else
+			setbit(i, 1);
+	}
+	return *this;
+}

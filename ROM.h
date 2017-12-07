@@ -22,34 +22,28 @@ public:
 
 	¬озвращает байт по строке
 	*/
-	byte &return_by_string(const std::string &title);/*!
+	byte &return_by_string(const std::string &);/*!
 	\brief ¬озврат значени€
 
 	¬озвращает регистр по строке
 	*/
-	dword &return_reg_by_string(const std::string &title);
+	dword &return_reg_by_string(const std::string &);
 	/*!
 	\brief ѕересылка данных
 		MOV приемник, источник 
 			Ѕазова€ команда пересылки данных.  опирует содержимое источника в приемник, источник не измен€етс€. 
 	\param регистр
 	*/
-	dword mov_reg(const std::string &in, const std::string &out);
-	/*!
-	\brief ѕересылка данных
-		MOV приемник, источник
-			Ѕазова€ команда пересылки данных.  опирует содержимое источника в приемник, источник не измен€етс€.
-	\param регистр
-	*/
-	dword mov_reg(const std::string &in, int out);
-
-	byte mov(const std::string &in, const std::string &out);
-	byte mov(const std::string &in, int out);
-	byte add(const std::string &in, const std::string &out);
-	byte add(const std::string &in, int out);
-	byte sub(const std::string &in, const std::string &out);
-	byte sub(const std::string &in, int out);
-	bool cmp(const std::string &in, const std::string &out); 
+	void mov(const std::string &, const std::string &, int);
+	void mov(const std::string &, int, int);
+	void add(const std::string &, const std::string &, int);
+	void add(const std::string &, int, int);
+	void xor(const std::string &, const std::string &, int);
+	void xor(const std::string &, int, int);
+	void input_xor(const std::string &in, const std::string &out);
+	void sub(const std::string &, const std::string &, int);
+	void sub(const std::string &, int, int);
+	bool cmp(const std::string &, const std::string &); 
 	void input_mov(const std::string &, const std::string &);
 	void input_add(const std::string &, const std::string &);
 	void input_sub(const std::string &, const std::string &);

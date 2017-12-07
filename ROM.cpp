@@ -10,54 +10,64 @@ byte& ROM::return_by_string(const std::string &title) {
 	else if (title == "DH") return EDX.return_byte(0);
 	else if (title == "DL") return EDX.return_byte(1);
 }
-
 dword& ROM::return_reg_by_string(const std::string &title) {
 	if (title == "EAX") return EAX;
 	else if (title == "EBX") return EBX;
 	else if (title == "ECX") return ECX;
 	else if (title == "EDX") return EDX;
 }
-
-dword ROM::mov_reg(const std::string &in, const std::string &out) {
-	return_reg_by_string(in) = return_reg_by_string(out);
-	return return_reg_by_string(in);
+void ROM::mov(const std::string &in, const std::string &out, int type) {
+	if (type) 
+		return_by_string(in) = return_by_string(out);
+	else 
+		return_reg_by_string(in) = return_reg_by_string(out);
 }
-
-dword ROM::mov_reg(const std::string &in, int out) {
-	return_reg_by_string(in) = out;
-	return return_reg_by_string(in);
+void ROM::mov(const std::string &in, int out, int type) {
+	if (type) 
+		return_by_string(in) = out;
+	else 
+		return_reg_by_string(in) = out;
 }
-
-byte ROM::mov(const std::string &in, const std::string &out) {
-	return_by_string(in) = return_by_string(out);
-	return return_by_string(in);
+void ROM::add(const std::string &in, const std::string &out, int type) {
+	if (type)
+		return_by_string(in) += return_by_string(out);
+	else
+		return_reg_by_string(in) += return_reg_by_string(out);
 }
-
-byte ROM::mov(const std::string &in, int out) {
-	return_by_string(in) = out;
-	return return_by_string(in);
+void ROM::add(const std::string &in, int out, int type) {
+	if (type)
+		return_by_string(in) += out;
+	else
+		return_reg_by_string(in) += out;
 }
-
-byte ROM::add(const std::string &in, const std::string &out) {
-	return_by_string(in) += return_by_string(out);
-	return return_by_string(in);
+void ROM::sub(const std::string &in, const std::string &out, int type) {
+	if (type)
+		return_by_string(in) -= return_by_string(out);
+	else
+		return_reg_by_string(in) -= return_reg_by_string(out);
 }
-
-byte ROM::add(const std::string &in, int out) {
-	return_by_string(in) += out;
-	return return_by_string(in);
+void ROM::sub(const std::string &in, int out, int type) {
+	if (type)
+		return_by_string(in) -= out;
+	else
+		return_reg_by_string(in) -= out;
 }
-
-byte ROM::sub(const std::string &in, const std::string &out) {
-	return_by_string(in) -= return_by_string(out);
-	return return_by_string(in);
+void ROM::xor(const std::string &in, const std::string &out, int type) {
+	if (type) 
+		return_by_string(in) &= return_by_string(out);
+	else 
+		return_reg_by_string(in) &= return_reg_by_string(out);
 }
-
-byte ROM::sub(const std::string &in, int out) {
-	return_by_string(in) -= out;
-	return return_by_string(in);
+void ROM::xor(const std::string &in, int out, int type) {
+	if (type) {
+		byte temp(out);
+		return_by_string(in) &= temp;
+	}
+	else {
+		dword temp(out);
+		return_reg_by_string(in) &= temp;
+	}
 }
-
 bool ROM::cmp(const std::string &in, const std::string &out) {
 	if (return_by_string(in) == return_by_string(out)) {
 		std::cout << "eq" << std::endl;
@@ -86,35 +96,60 @@ void ROM::pop(const std::string &in) {
 		return_reg_by_string(in) = Stack.pop();
 	}
 }
-
 void ROM::input_mov(const std::string &in, const std::string &out) {
 	if (validator_parts(out))
-		mov(in, out);
+		mov(in, out, 1);
 	else if (validator_reg(out))
-		mov_reg(in, out);
+		mov(in, out, 0);
 	else {
 		int i = std::atoi(out.c_str());
 		if (validator_reg(in)) {
-			mov_reg(in, i);
+			mov(in, i, 0);
 		}
-		if (validator_parts(in))
-			mov(in, i);
+		else if (validator_parts(in))
+			mov(in, i, 1);
+	}
+}
+void ROM::input_xor(const std::string &in, const std::string &out) {
+	if (validator_parts(out))
+		xor(in, out, 1);
+	else if (validator_reg(out))
+		xor(in, out, 0);
+	else {
+		int i = std::atoi(out.c_str());
+		if (validator_reg(in)) {
+			xor(in, i, 0);
+		}
+		else if (validator_parts(in))
+			xor(in, i, 1);
 	}
 }
 void ROM::input_add(const std::string &in, const std::string &out) {
 	if (validator_parts(out))
-		add(in, out);
+		add(in, out, 1);
+	else if (validator_reg(out))
+		add(in, out, 0);
 	else {
 		int i = std::atoi(out.c_str());
-		add(in, i);
+		if (validator_reg(in)) {
+			add(in, i, 0);
+		}
+		else if (validator_parts(in))
+			add(in, i, 1);
 	}
 }
 void ROM::input_sub(const std::string &in, const std::string &out) {
 	if (validator_parts(out))
-		sub(in, out);
+		sub(in, out, 1);
+	else if (validator_reg(out))
+		sub(in, out, 0);
 	else {
 		int i = std::atoi(out.c_str());
-		sub(in, i);
+		if (validator_reg(in)) {
+			sub(in, i, 0);
+		}
+		else if (validator_parts(in))
+			sub(in, i, 1);
 	}
 }
 void ROM::input_cmp(const std::string &in, const std::string &out) {
@@ -145,6 +180,12 @@ bool ROM::parser(const std::string &input) {
 		input_cmp(in, out);
 		return true;
 	}
+	else if (input == "xor") {
+		std::string in, out;
+		std::cin >> in >> out;
+		input_xor(in, out);
+		return true;
+	}
 	else if (input == "push") {
 		std::string in;
 		std::cin >> in;
@@ -170,33 +211,29 @@ bool ROM::parser(const std::string &input) {
 	}
 	else if (input == "exit") return false;
 }
-
 bool ROM::validator_parts(const std::string &in) {
 	if (in == "AH" || in == "BH" || in == "AL" || in == "BL" || in == "CL" || in == "DL" || in == "CL" || in == "DL")
 		return true;
 	else return false;
 }
-
 bool ROM::validator_reg(const std::string &in) {
 	if (in == "EAX" || in == "EBX" || in == "ECX" || in == "EDX")
 		return true;
 	else return false;
 }
-
 bool ROM::validator_command(const std::string &in) {
 	if (in == "mov" || in == "add" || in == "sub" || in == "cmp" ||
 		in == "open" || in == "push" || in == "pop" || in == "out")
 		return true;
 	else return false;
 }
-
 int ROM::comp(const std::string &input) {
 	std::ifstream file(input);
 	int count = 0;
 	std::string in, out;
 	for (file >> in; !file.eof(); file >> in) {
 		++count;
-		if (in == "mov" || in == "add" || in == "sub" || in == "cmp") {
+		if (in == "mov" || in == "add" || in == "sub" || in == "cmp" || in == "xor") {
 			file >> in;
 			file >> out;
 		}
@@ -215,7 +252,6 @@ int ROM::comp(const std::string &input) {
 	std::cout << "comp. completed. Strings in file: " << count << std::endl;
 	return count;
 }
-
 bool ROM::file_parser() {
 	std::string in, out;
 	std::cin >> in;
@@ -249,6 +285,11 @@ bool ROM::file_parser() {
 				file >> in;
 				file >> out;
 				input_cmp(in, out);
+			}
+			else if (in == "xor") {
+				file >> in;
+				file >> out;
+				input_xor(in, out);
 			}
 			else if (in == "push") {
 				file >> in;

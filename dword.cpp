@@ -246,3 +246,14 @@ std::ostream & operator<<(std::ostream &out, dword &rhs)
 		out << rhs.return_byte(i) << " : ";
 	return out;
 }
+
+dword& dword::operator&=(const dword& in) {
+	for (int i = 31; i >= 0; --i) {
+		if (in.getbit(i) == getbit(i)) {
+			setbit(i, 0);
+		}
+		else
+			setbit(i, 1);
+	}
+	return *this;
+}
