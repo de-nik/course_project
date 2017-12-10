@@ -12,7 +12,6 @@ public:
 	void flip(size_t);
 	void reset();
 	bool operator== (const dword&) const;
-	bool operator!= (const dword&) const;
 	dword &operator += (const dword&);
 	dword &operator += (int);
 	dword &operator -= (const dword&);

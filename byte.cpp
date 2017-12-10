@@ -91,16 +91,6 @@ bool byte::operator== (const byte& rhs) const
 	return true;
 }
 
-bool byte::operator!= (const byte& rhs) const
-{
-	for (int i = 0; i < 8; ++i)
-	{
-		if (getbit(i) != rhs.getbit(i))
-			return true;
-	}
-	return false;
-}
-
 byte& byte::operator += (int rhs) {
 	int val = to_int() + rhs;
 	int tmp = val;

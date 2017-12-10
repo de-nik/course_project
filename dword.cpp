@@ -81,16 +81,6 @@ bool dword::operator== (const dword& rhs) const
 	return true;
 }
 
-bool dword::operator!= (const dword& rhs) const
-{
-	for (int i = 0; i < 32; ++i)
-	{
-		if (getbit(i) != rhs.getbit(i))
-			return true;
-	}
-	return false;
-}
-
 dword& dword::operator += (int rhs) {
 	int val = to_int() + rhs;
 	int tmp = val;

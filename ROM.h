@@ -3,6 +3,7 @@
 #include "byte.h"
 #include "word.h"
 #include "dword.h"
+#include "data_block.h"
 #include "RAM.h"
 /*!
 	\brief Класс симуляции
@@ -16,6 +17,7 @@ class ROM
 	dword ECX;
 	dword EDX;
 	RAM Stack;
+	data_block data;
 public:
 	/*!
 	\brief Возврат значения
@@ -63,8 +65,10 @@ public:
 	bool validator_reg(const std::string &);
 	bool validator_command_double(const std::string &);
 	bool validator_command(const std::string &);
+	bool ROM::validator_title(const std::string &);
 	bool file_parser();
 	int comp(const std::string &);
+	void add_integer(int, const std::string &);
 };
 
 std::ostream & operator<<(std::ostream &out, dword &rhs);

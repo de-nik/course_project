@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="byte.cpp" />
+    <ClCompile Include="data_block.cpp" />
     <ClCompile Include="dword.cpp" />
     <ClCompile Include="ROM.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -155,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="byte.h" />
+    <ClInclude Include="data_block.h" />
     <ClInclude Include="dword.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="ROM.h" />
