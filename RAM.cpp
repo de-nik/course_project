@@ -246,8 +246,7 @@ int RAM::elections(int electors_choise) {
 	}
 }
 
-int RAM::pop()
-{
+int RAM::pop() {
 	int flag(0), w(0);
 	for (int i = 7; i >= 0; --i) {
 		++w;

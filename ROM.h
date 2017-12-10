@@ -22,7 +22,8 @@ public:
 
 	¬озвращает байт по строке
 	*/
-	byte &return_by_string(const std::string &);/*!
+	byte &return_by_string(const std::string &);
+	/*!
 	\brief ¬озврат значени€
 
 	¬озвращает регистр по строке
@@ -30,8 +31,8 @@ public:
 	dword &return_reg_by_string(const std::string &);
 	/*!
 	\brief ѕересылка данных
-		MOV приемник, источник 
-			Ѕазова€ команда пересылки данных.  опирует содержимое источника в приемник, источник не измен€етс€. 
+		MOV приемник, источник
+			Ѕазова€ команда пересылки данных.  опирует содержимое источника в приемник, источник не измен€етс€.
 	\param регистр
 	*/
 	void mov(const std::string &, const std::string &, int);
@@ -39,23 +40,28 @@ public:
 	void add(const std::string &, const std::string &, int);
 	void add(const std::string &, int, int);
 	void xor(const std::string &, const std::string &, int);
-	void xor(const std::string &, int, int); 
+	void xor(const std::string &, int, int);
 	void and(const std::string &, const std::string &, int);
 	void and(const std::string &, int, int);
-	void input_xor(const std::string &in, const std::string &out);
-	void input_and(const std::string &in, const std::string &out);
+	void input_xor(const std::string &, const std::string &);
+	void input_and(const std::string &, const std::string &);
 	void sub(const std::string &, const std::string &, int);
 	void sub(const std::string &, int, int);
-	bool cmp(const std::string &, const std::string &); 
+	bool cmp(const std::string &, const std::string &);
+	void dec(const std::string &, int);
+	void inc(const std::string &, int);
 	void input_mov(const std::string &, const std::string &);
+	void input_dec(const std::string &);
+	void input_inc(const std::string &);
 	void input_add(const std::string &, const std::string &);
 	void input_sub(const std::string &, const std::string &);
 	bool input_cmp(const std::string &, const std::string &);
 	bool parser(const std::string &);
-	void push(const std::string &); 
+	void push(const std::string &);
 	void pop(const std::string &);
 	bool validator_parts(const std::string &);
 	bool validator_reg(const std::string &);
+	bool validator_command_double(const std::string &);
 	bool validator_command(const std::string &);
 	bool file_parser();
 	int comp(const std::string &);

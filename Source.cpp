@@ -14,7 +14,8 @@ int main()
 	ROM one;
 	std::string input;
 	while (input != "exit") {
-		std::cout << "List of avaible command: " << std::endl << "mov, add, sub, cmp, push, pop, out, xor, and, jmp, jne, open" << std::endl;
+		std::cout << "List of avaible command: " << std::endl 
+				  << "mov, add, sub, cmp, push, pop, out, xor, and, dec, inc, open (+ jmp, jne)" << std::endl;
 		std::cin >> input;
 		one.parser(input);
 		system("pause");
