@@ -17,255 +17,98 @@ dword& ROM::return_reg_by_string(const std::string &title) {
 	else if (title == "EDX") return EDX;
 }
 /******************************doublecommand*****************************************/
-void ROM::mov(const std::string &in, const std::string &out, int type) {
-	if (type == 1)
-		return_by_string(in) = return_by_string(out);
-	else if (type == 3)
-		return_reg_by_string(in) = data.return_by_string(out);
-	else if (type == 2)
-		data.return_by_string(in) = return_reg_by_string(out);
-	else 
-		return_reg_by_string(in) = return_reg_by_string(out);
+void ROM::mov(const std::string &in, const std::string &out) {
+	int temp_out;
+	if		(validator_parts(out)) temp_out = return_by_string(out).to_int();
+	else if (validator_reg(out))   temp_out = return_reg_by_string(out).to_int();
+	else if (validator_title(out)) temp_out = data.return_by_string(out).to_int();
+	else						   temp_out = std::atoi(out.c_str());
+	
+	if		(validator_parts(in)) return_by_string(in) = temp_out;
+	else if (validator_reg(in))	  return_reg_by_string(in) = temp_out;
+	else if (validator_title(in)) data.return_by_string(in) = temp_out;
+	else {}
 }
-void ROM::mov(const std::string &in, int out, int type) {
-	if (type == 1)
-		return_by_string(in) = out;
-	else if (type == 3)
-		return_reg_by_string(in) = out;
-	else if (type == 2)
-		data.return_by_string(in) = out;
-	else
-		return_reg_by_string(in) = out;
+void ROM::add(const std::string &in, const std::string &out) {
+	int temp_out(0);
+	if		(validator_parts(out)) temp_out = return_by_string(out).to_int();
+	else if (validator_reg(out))   temp_out = return_reg_by_string(out).to_int();
+	else if (validator_title(out)) temp_out = data.return_by_string(out).to_int();
+	else						   temp_out = std::atoi(out.c_str());
+
+	if		(validator_parts(in)) return_by_string(in) += temp_out;
+	else if (validator_reg(in))	  return_reg_by_string(in) += temp_out;
+	else if (validator_title(in)) data.return_by_string(in) += temp_out;
+	else {}
 }
-void ROM::add(const std::string &in, const std::string &out, int type) {
-	if (type)
-		return_by_string(in) += return_by_string(out);
-	else
-		return_reg_by_string(in) += return_reg_by_string(out);
+void ROM::sub(const std::string &in, const std::string &out) {
+	int temp_out;
+	if		(validator_parts(out)) temp_out = return_by_string(out).to_int();
+	else if (validator_reg(out))   temp_out = return_reg_by_string(out).to_int();
+	else if (validator_title(out)) temp_out = data.return_by_string(out).to_int();
+	else						   temp_out = std::atoi(out.c_str());
+
+	if		(validator_parts(in)) return_by_string(in) -= temp_out;
+	else if (validator_reg(in))	  return_reg_by_string(in) -= temp_out;
+	else if (validator_title(in)) data.return_by_string(in) -= temp_out;
+	else {}							
 }
-void ROM::add(const std::string &in, int out, int type) {
-	if (type)
-		return_by_string(in) += out;
-	else
-		return_reg_by_string(in) += out;
+void ROM::xor(const std::string &in, const std::string &out) {
+	int temp_out;
+	if (validator_parts(out)) temp_out = return_by_string(out).to_int();
+	else if (validator_reg(out))   temp_out = return_reg_by_string(out).to_int();
+	else if (validator_title(out)) temp_out = data.return_by_string(out).to_int();
+	else						   temp_out = std::atoi(out.c_str());
+
+	if (validator_parts(in)) return_by_string(in) ^= temp_out;
+	else if (validator_reg(in))	  return_reg_by_string(in) ^= temp_out;
+	else if (validator_title(in)) data.return_by_string(in) ^= temp_out;
+	else {}
 }
-void ROM::sub(const std::string &in, const std::string &out, int type) {
-	if (type)
-		return_by_string(in) -= return_by_string(out);
-	else
-		return_reg_by_string(in) -= return_reg_by_string(out);
-}
-void ROM::sub(const std::string &in, int out, int type) {
-	if (type)
-		return_by_string(in) -= out;
-	else
-		return_reg_by_string(in) -= out;
-}
-void ROM:: xor (const std::string &in, const std::string &out, int type) {
-	if (type)
-		return_by_string(in) ^= return_by_string(out);
-	else
-		return_reg_by_string(in) ^= return_reg_by_string(out);
-}
-void ROM:: xor (const std::string &in, int out, int type) {
-	if (type) {
-		byte temp(out);
-		return_by_string(in) ^= temp;
-	}
-	else {
-		dword temp(out);
-		return_reg_by_string(in) ^= temp;
-	}
+void ROM::and(const std::string &in, const std::string &out) {
+	int temp_out;
+	if (validator_parts(out)) temp_out = return_by_string(out).to_int();
+	else if (validator_reg(out))   temp_out = return_reg_by_string(out).to_int();
+	else if (validator_title(out)) temp_out = data.return_by_string(out).to_int();
+	else						   temp_out = std::atoi(out.c_str());
+
+	if (validator_parts(in)) return_by_string(in) &= temp_out;
+	else if (validator_reg(in))	  return_reg_by_string(in) &= temp_out;
+	else if (validator_title(in)) data.return_by_string(in) &= temp_out;
+	else {}
 }
 bool ROM::cmp(const std::string &in, const std::string &out) {
-	if (return_by_string(in) == return_by_string(out)) {
-		std::cout << "eq" << std::endl;
-		return true;
-	}
-	else {
-		std::cout << "not eq" << std::endl;
-		return false;
-	}
+	int temp_in, temp_out;
+	if		(validator_parts(in)) temp_in = return_by_string(in).to_int();
+	else if (validator_reg(in))	  temp_in = return_reg_by_string(in).to_int();
+	else if (validator_title(in)) temp_in = data.return_by_string(in).to_int();
+	else						  temp_in = std::atoi(out.c_str());
+
+	if		(validator_parts(out)) temp_out = return_by_string(out).to_int();
+	else if (validator_reg(out))   temp_out = return_reg_by_string(out).to_int();
+	else if (validator_title(out)) temp_out = data.return_by_string(out).to_int();
+	else						   temp_out = std::atoi(out.c_str());
+
+	if (temp_in == temp_out) return true;
+	else					 return false;
 }
-void ROM:: and (const std::string &in, const std::string &out, int type) {
-	if (type)
-		return_by_string(in) &= return_by_string(out);
-	else
-		return_reg_by_string(in) &= return_reg_by_string(out);
-}
-void ROM:: and (const std::string &in, int out, int type) {
-	if (type) {
-		byte temp(out);
-		return_by_string(in) &= temp;
-	}
-	else {
-		dword temp(out);
-		return_reg_by_string(in) &= temp;
-	}
-}
-/**********************************command********************************************/
-void ROM::dec(const std::string &in, int type) {
-	if (type)
-		return_by_string(in) -= 1;
-	else
-		return_reg_by_string(in) -= 1;
-}
-void ROM::inc(const std::string &in, int type) {
-	if (type)
-		return_by_string(in) += 1;
-	else
-		return_reg_by_string(in) += 1;
-}
-void ROM::push(const std::string &in) {
-	if (validator_parts(in))
-		Stack.push(return_by_string(in));
-	else if (validator_reg(in)) {
-		Stack.push(return_reg_by_string(in));
-	}
-	else {
-		dword temp = std::stoi(in);
-		Stack.push(temp);
-	}
-}
-void ROM::pop(const std::string &in) {
-	if (validator_parts(in))
-		return_by_string(in) = Stack.pop();
-	else if (validator_reg(in)) {
-		return_reg_by_string(in) = Stack.pop();
-	}
-}
-/*************************************************************************************/
-void ROM::input_dec(const std::string &in) {
-	if (validator_parts(in))
-		dec(in, 1);
-	else if (validator_reg(in))
-		dec(in, 0);
-}
-void ROM::input_inc(const std::string &in) {
-	if (validator_parts(in))
-		inc(in, 1);
-	else if (validator_reg(in))
-		inc(in, 0);
-}
-void ROM::input_mov(const std::string &in, const std::string &out) {
-	if (validator_title(out))
-		mov(in, out, 3);
-	else if (validator_title(in) && validator_reg(out))
-		mov(in, out, 2);
-	else if (validator_parts(out))
-		mov(in, out, 1);
-	else if (validator_reg(out))
-		mov(in, out, 0);
-	else {
-		int i = std::atoi(out.c_str());
-		if (validator_title(out))
-			mov(in, i, 3);
-		else if (validator_title(in))
-			mov(in, i, 2);
-		else if (validator_reg(in)) {
-			mov(in, i, 0);
-		}
-		else if (validator_parts(in))
-			mov(in, i, 1);
-	}
-}
-void ROM::input_xor(const std::string &in, const std::string &out) {
-	if (validator_parts(out))
-		xor (in, out, 1);
-	else if (validator_reg(out))
-		xor (in, out, 0);
-	else {
-		int i = std::atoi(out.c_str());
-		if (validator_reg(in)) {
-			xor (in, i, 0);
-		}
-		else if (validator_parts(in))
-			xor (in, i, 1);
-	}
-}
-void ROM::input_and(const std::string &in, const std::string &out) {
-	if (validator_parts(out))
-		and (in, out, 1);
-	else if (validator_reg(out))
-		and (in, out, 0);
-	else {
-		int i = std::atoi(out.c_str());
-		if (validator_reg(in)) {
-			and (in, i, 0);
-		}
-		else if (validator_parts(in))
-			and (in, i, 1);
-	}
-}
-void ROM::input_add(const std::string &in, const std::string &out) {
-	if (validator_parts(out))
-		add(in, out, 1);
-	else if (validator_reg(out))
-		add(in, out, 0);
-	else {
-		int i = std::atoi(out.c_str());
-		if (validator_reg(in)) {
-			add(in, i, 0);
-		}
-		else if (validator_parts(in))
-			add(in, i, 1);
-	}
-}
-void ROM::input_sub(const std::string &in, const std::string &out) {
-	if (validator_parts(out))
-		sub(in, out, 1);
-	else if (validator_reg(out))
-		sub(in, out, 0);
-	else {
-		int i = std::atoi(out.c_str());
-		if (validator_reg(in)) {
-			sub(in, i, 0);
-		}
-		else if (validator_parts(in))
-			sub(in, i, 1);
-	}
-}
-bool ROM::input_cmp(const std::string &in, const std::string &out) {
-	return cmp(in, out);
-}
-/*************************************************************************************/
 void ROM::add_integer(int out, const std::string &in) {
 	dword temp(out);
 	data.push(temp, in);
 }
-bool ROM::parser(const std::string &input) {
-	std::string in, out;
-	if (validator_command_double(input)) {
-		std::cin >> in >> out;
-		if (input == "mov") input_mov(in, out);
-		else if (input == "add") input_add(in, out);
-		else if (input == "sub") input_sub(in, out);
-		else if (input == "cmp") input_cmp(in, out);
-		else if (input == "xor") input_xor(in, out);
-		else if (input == "and") input_and(in, out);
-		return true;
-	}
-	else if (validator_command(input)) {
-		std::cin >> in;
-		if (input == "push") push(in);
-		else if (input == "pop") pop(in);
-		else if (input == "dec") input_dec(in);
-		else if (input == "inc") input_inc(in);
-		else if (input == "dword") add_integer(0, in);
-		return true;
-	}
-	else if (input == "out") {
-		std::cout <<
-			"EAX: " << EAX << std::endl <<
-			"EBX: " << EBX << std::endl <<
-			"ECX: " << ECX << std::endl <<
-			"EDX: " << EDX << std::endl << std::endl;
-		return true;
-	}
-	else if (input == "open") file_parser();
-	else if (input == "exit") return false;
-	else std::cout << "Try again" << std::endl;
+/**********************************command********************************************/
+void ROM::push(const std::string &in) {
+	if		(validator_title(in)) Stack.push(data.return_by_string(in));
+	else if (validator_parts(in)) Stack.push(return_by_string(in));
+	else if (validator_reg(in))	Stack.push(return_reg_by_string(in));
+	else dword i = std::atoi(in.c_str());
 }
+void ROM::pop(const std::string &in) {
+	if		(validator_parts(in)) return_by_string(in) = Stack.pop();
+	else if (validator_reg(in)) return_reg_by_string(in) = Stack.pop();
+	else if (validator_title(in)) data.return_by_string(in) = Stack.pop();
+}
+/*************************************************************************************/
 int ROM::comp(const std::string &input) {
 	std::ifstream file(input);
 	int count = 0;
@@ -288,6 +131,39 @@ int ROM::comp(const std::string &input) {
 	std::cout << "comp. completed. Strings in file: " << count << std::endl;
 	return count;
 }
+bool ROM::parser(const std::string &input) {
+	std::string in, out;
+	if (validator_command_double(input)) {
+		std::cin >> in >> out;
+		if (input == "mov") mov(in, out);
+		else if (input == "add") add(in, out);
+		else if (input == "sub") sub(in, out);
+		else if (input == "cmp") cmp(in, out);
+		else if (input == "xor") xor(in, out);
+		else if (input == "dec") add(in, "1");
+		else if (input == "inc") sub(in, "1");
+		else if (input == "and") and(in, out);
+		return true;
+	}
+	else if (validator_command(input)) {
+		std::cin >> in;
+		if (input == "push") push(in);
+		else if (input == "pop") pop(in);
+		else if (input == "dword") add_integer(0, in);
+		return true;
+	}
+	else if (input == "out") {
+		std::cout <<
+			"EAX: " << EAX << std::endl <<
+			"EBX: " << EBX << std::endl <<
+			"ECX: " << ECX << std::endl <<
+			"EDX: " << EDX << std::endl << std::endl;
+		return true;
+	}
+	else if (input == "open") file_parser();
+	else if (input == "exit") return false;
+	else std::cout << "Try again" << std::endl;
+}
 bool ROM::file_parser() {
 	std::string in, out, label, input;
 	int lbl = 0;
@@ -305,16 +181,18 @@ bool ROM::file_parser() {
 		for (file >> input; !file.eof(); file >> input) {
 			if (validator_command_double(input)) {
 				file >> in >> out;
-				if (input == "mov") input_mov(in, out);
-				else if (input == "add") input_add(in, out);
-				else if (input == "sub") input_sub(in, out);
-				else if (input == "xor") input_xor(in, out);
-				else if (input == "and") input_and(in, out);
+				if (input == "mov") mov(in, out);
+				else if (input == "add") add(in, out);
+				else if (input == "sub") sub(in, out);
+				else if (input == "xor") xor(in, out);
+				else if (input == "and") and(in, out);
+				else if (input == "dec") add(in, "1");
+				else if (input == "inc") sub(in, "1");
 				else if (input == "cmp") {
 					file >> label;
 					int temp = file.tellg();
 					if (label == "jne") {
-						if (input_cmp(in, out)) {
+						if (cmp(in, out)) {
 							file.seekg(-((int)file.tellg() - lbl), std::ios_base::cur);
 						}
 					}
@@ -327,8 +205,7 @@ bool ROM::file_parser() {
 				file >> in;
 				if (input == "push") push(in);
 				else if (input == "pop") pop(in);
-				else if (input == "dec") input_dec(in);
-				else if (input == "inc") input_inc(in);
+				else if (input == "dword") add_integer(0, in);
 			}
 			else if (input == "label") lbl = file.tellg();
 			else if (input == "jmp") file.seekg(-((int)file.tellg() - lbl), std::ios_base::cur);
@@ -349,7 +226,7 @@ bool ROM::file_parser() {
 }
 /*************************************************************************************/
 bool ROM::validator_parts(const std::string &in) {
-	if (in == "AH" || in == "BH" || in == "AL" || in == "BL" || in == "CL" || in == "DL" || in == "CL" || in == "DL")
+	if (in == "AH" || in == "BH" || in == "AL" || in == "BL" || in == "CL" || in == "DL" || in == "CH" || in == "DH")
 		return true;
 	else return false;
 }

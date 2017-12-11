@@ -37,27 +37,12 @@ public:
 			Базовая команда пересылки данных. Копирует содержимое источника в приемник, источник не изменяется.
 	\param регистр
 	*/
-	void mov(const std::string &, const std::string &, int);
-	void mov(const std::string &, int, int);
-	void add(const std::string &, const std::string &, int);
-	void add(const std::string &, int, int);
-	void xor(const std::string &, const std::string &, int);
-	void xor(const std::string &, int, int);
-	void and(const std::string &, const std::string &, int);
-	void and(const std::string &, int, int);
-	void input_xor(const std::string &, const std::string &);
-	void input_and(const std::string &, const std::string &);
-	void sub(const std::string &, const std::string &, int);
-	void sub(const std::string &, int, int);
+	void mov(const std::string &, const std::string &);
+	void add(const std::string &, const std::string &);
+	void xor(const std::string &, const std::string &);
+	void and(const std::string &, const std::string &);
+	void sub(const std::string &, const std::string &);
 	bool cmp(const std::string &, const std::string &);
-	void dec(const std::string &, int);
-	void inc(const std::string &, int);
-	void input_mov(const std::string &, const std::string &);
-	void input_dec(const std::string &);
-	void input_inc(const std::string &);
-	void input_add(const std::string &, const std::string &);
-	void input_sub(const std::string &, const std::string &);
-	bool input_cmp(const std::string &, const std::string &);
 	bool parser(const std::string &);
 	void push(const std::string &);
 	void pop(const std::string &);

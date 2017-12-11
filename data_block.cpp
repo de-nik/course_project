@@ -56,7 +56,7 @@ void data_block::push(const dword &value, const std::string& in) {
 
 void data_block::print_stack() {
 	for (int i = size - 1; i >= 0; i--)
-		std::cout << "title[" << i << "] : " << title[i] << std::endl;
+		std::cout << "title[" << i << "] : " << title[i] << data[i] << std::endl;
 }
 
 bool data_block::validator(const std::string &in) {

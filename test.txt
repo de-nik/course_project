@@ -1,7 +1,9 @@
 mov AH 7
 mov BH 6
+dword a
+mov a 1
 label
 out
-add BH 1
+add BH a
 cmp AH BH
 jne
