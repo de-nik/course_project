@@ -3,7 +3,6 @@ dword::dword() {
 	array_of_bytes[0] = 0;
 	array_of_bytes[1] = 0;
 }
-
 int dword::to_int() const {
 	int res = 0;
 	dword temp = *this;
@@ -30,9 +29,7 @@ int dword::to_int() const {
 	}
 	return res;
 }
-
-dword::dword(int val)
-{
+dword::dword(int val){
 	int tmp = val;
 
 	for (int i = 0; i < 32; ++i)
@@ -54,38 +51,29 @@ dword::dword(int val)
 			}
 	}
 }
-
-void dword::reset()
-{
+void dword::reset(){
 	for (size_t i = 0; i < 32; ++i)
 	{
 		setbit(i, 0);
 	}
 }
-
-void dword::flip()
-{
+void dword::flip(){
 	for (size_t i = 0; i < 32; i++)
 	{
 		setbit(i, !getbit(i));
 	}
 }
-
-bool dword::operator== (const dword& rhs) const
-{
-	for (int i = 0; i < 32; ++i)
-	{
+bool dword::operator== (const dword& rhs) const {
+	for (int i = 0; i < 32; ++i){
 		if (getbit(i) != rhs.getbit(i))
 			return false;
 	}
 	return true;
 }
-
 dword& dword::operator += (int rhs) {
 	int val = to_int() + rhs;
 	int tmp = val;
-	for (int i = 0; i < 32; ++i)
-	{
+	for (int i = 0; i < 32; ++i){
 		if (val % 2)
 			setbit(i, 1);
 		else
@@ -97,25 +85,21 @@ dword& dword::operator += (int rhs) {
 		flip();
 		flip(0);
 		if (!getbit(0))
-			for (int i = 31; !getbit(31 - i); --i)
-			{
+			for (int i = 31; !getbit(31 - i); --i) {
 				flip(32 - i);
 			}
 	}
 	return *this;
 }
-
 dword& dword::operator -= (const dword& rhs) {
 	for (int i = 31; i >= 0; --i)
 		setbit(i, (rhs.getbit(i) != getbit(i)));
 	return *this;
 }
-
 dword& dword::operator -= (int rhs) {
 	int val = to_int() - rhs;
 	int tmp = val;
-	for (int i = 0; i < 32; ++i)
-	{
+	for (int i = 0; i < 32; ++i){
 		if (val % 2)
 			setbit(i, 1);
 		else
@@ -127,14 +111,12 @@ dword& dword::operator -= (int rhs) {
 		flip();
 		flip(0);
 		if (!getbit(0))
-			for (int i = 31; !getbit(31 - i); --i)
-			{
+			for (int i = 31; !getbit(31 - i); --i) {
 				flip(32 - i);
 			}
 	}
 	return *this;
 }
-
 dword& dword::operator =(int val) {
 	reset();
 	int tmp = val;
@@ -158,31 +140,23 @@ dword& dword::operator =(int val) {
 	}
 	return *this;
 }
-
 dword& dword::operator += (const dword& rhs) {
 	for (int i = 31; i >= 0; --i)
 		setbit(i, (rhs.getbit(i) != getbit(i)));
 	return *this;
 }
-
 dword& dword::operator =(const dword& rhs) {
 	for (size_t i = 0; i <= 31; ++i)
 		setbit(i, rhs.getbit(i));
 	return *this;
 }
-
 dword::~dword() {
 
 }
-
-void dword::flip(size_t index)
-{
+void dword::flip(size_t index){
 	setbit(index, !getbit(index));
 }
-
-
-bool dword::getbit(int index) const
-{
+bool dword::getbit(int index) const{
 	if (index < 8)
 		return array_of_bytes[0].return_array() >> index & 1;
 	else if (index > 7 && index < 16)
@@ -192,9 +166,7 @@ bool dword::getbit(int index) const
 	else
 		return array_of_bytes[3].return_array() >> (index - 24) & 1;
 }
-
-void dword::setbit(int index, bool newval)
-{
+void dword::setbit(int index, bool newval){
 	if (newval) {
 		if (index < 8)
 			array_of_bytes[0].return_array() |= 1 << index;
@@ -209,14 +181,13 @@ void dword::setbit(int index, bool newval)
 		if (index < 8)
 			array_of_bytes[0].return_array() &= ~(1 << index);
 		else if (index > 7 && index < 16)
-			array_of_bytes[1].return_array() &= ~(1 << index - 8);
+			array_of_bytes[1].return_array() &= ~(1 << (index - 8));
 		else if (index > 15 && index < 24)
-			array_of_bytes[2].return_array() &= ~(1 << index - 16);
+			array_of_bytes[2].return_array() &= ~(1 << (index - 16));
 		else
-			array_of_bytes[3].return_array() &= ~(1 << index - 24);
+			array_of_bytes[3].return_array() &= ~(1 << (index - 24));
 	}
 }
-
 byte dword::return_byte(size_t number) const{
 	return array_of_bytes[number];
 }
@@ -229,14 +200,6 @@ dword::dword(const byte& first, const byte& second, const byte& third, const byt
 	array_of_bytes[2] = third;
 	array_of_bytes[3] = fourth;
 }
-
-std::ostream & operator<<(std::ostream &out, dword &rhs)
-{
-	for (int i = 3; i >= 0; --i)
-		out << rhs.return_byte(i) << " : ";
-	return out;
-}
-
 dword& dword::operator^=(const dword& in) {
 	for (int i = 31; i >= 0; --i) {
 		if (in.getbit(i) == getbit(i)) {
@@ -256,4 +219,9 @@ dword& dword::operator&=(const dword& in) {
 			setbit(i, 0);
 	}
 	return *this;
+}
+std::ostream & operator<<(std::ostream &out, dword &rhs){
+	for (int i = 3; i >= 0; --i)
+		out << rhs.return_byte(i) << " : ";
+	return out;
 }

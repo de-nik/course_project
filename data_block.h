@@ -12,9 +12,12 @@ class data_block {
 public:
 	data_block();
 	void inc_data();
+	void dec_data();
 	void push(const dword &, const std::string &);
 	void print_stack();
-	int data_block::size_char(char*);
+	int size_char(char*);
 	bool validator(const std::string &);
 	dword &return_by_string(const std::string &);
+	int return_size();
+	dword pop();
 };

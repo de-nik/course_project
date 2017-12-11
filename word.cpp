@@ -3,7 +3,6 @@ word::word() {
 	array_of_bytes[0] = 0;
 	array_of_bytes[1] = 0;
 }
-
 int word::to_int() const {
 	int res = 0;
 	word temp = *this;
@@ -30,7 +29,6 @@ int word::to_int() const {
 	}
 	return res;
 }
-
 word::word(int val)
 {
 	int tmp = val;
@@ -54,7 +52,6 @@ word::word(int val)
 			}
 	}
 }
-
 void word::reset()
 {
 	for (size_t i = 0; i < 16; ++i)
@@ -62,7 +59,6 @@ void word::reset()
 		setbit(i, 0);
 	}
 }
-
 void word::flip()
 {
 	for (size_t i = 0; i < 16; i++)
@@ -70,7 +66,6 @@ void word::flip()
 		setbit(i, !getbit(i));
 	}
 }
-
 bool word::operator== (const word& rhs) const
 {
 	for (int i = 0; i < 16; ++i)
@@ -80,7 +75,6 @@ bool word::operator== (const word& rhs) const
 	}
 	return true;
 }
-
 bool word::operator!= (const word& rhs) const
 {
 	for (int i = 0; i < 16; ++i)
@@ -90,7 +84,6 @@ bool word::operator!= (const word& rhs) const
 	}
 	return false;
 }
-
 word& word::operator += (int rhs) {
 	int val = to_int() + rhs;
 	int tmp = val;
@@ -114,13 +107,11 @@ word& word::operator += (int rhs) {
 	}
 	return *this;
 }
-
 word& word::operator -= (const word& rhs) {
 	for (int i = 15; i >= 0; --i)
 		setbit(i, (rhs.getbit(i) != getbit(i)));
 	return *this;
 }
-
 word& word::operator -= (int rhs) {
 	int val = to_int() - rhs;
 	int tmp = val;
@@ -144,7 +135,6 @@ word& word::operator -= (int rhs) {
 	}
 	return *this;
 }
-
 word& word::operator =(int val) {
 	reset();
 	int tmp = val;
@@ -168,29 +158,23 @@ word& word::operator =(int val) {
 	}
 	return *this;
 }
-
 word& word::operator += (const word& rhs) {
 	for (int i = 15; i >= 0; --i)
 		setbit(i, (rhs.getbit(i) != getbit(i)));
 	return *this;
 }
-
 word& word::operator =(const word& rhs) {
 	for (size_t i = 0; i <= 15; ++i)
 		setbit(i, rhs.getbit(i));
 	return *this;
 }
-
 word::~word() {
 
 }
-
 void word::flip(size_t index)
 {
 	setbit(index, !getbit(index));
 }
-
-
 bool word::getbit(int index) const
 {
 	if(index < 8)
@@ -198,7 +182,6 @@ bool word::getbit(int index) const
 	else 
 		return array_of_bytes[1].return_array() >> (index - 8) & 1;
 }
-
 void word::setbit(int index, bool newval)
 {
 	if (newval && index < 8) {
@@ -214,7 +197,6 @@ void word::setbit(int index, bool newval)
 		array_of_bytes[1].return_array() &= ~(1 << (index - 8));
 	}
 }
-
 byte word::return_byte(size_t number) const {
 	return array_of_bytes[number];
 }
@@ -235,7 +217,6 @@ word& word::operator^=(const word& in) {
 	}
 	return *this;
 }
-
 word& word::operator&=(const word& in) {
 	for (int i = 15; i >= 0; --i) {
 		if (in.getbit(i) == 1 && getbit(i) == 1) {

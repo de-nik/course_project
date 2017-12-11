@@ -1,7 +1,6 @@
 #include "RAM.h"
 
 RAM::RAM() : size(0), size_elector(0) { }
-
 void RAM::inc_electors() {
 	byte *temp_elector = new byte[size_elector];
 	for (int i = 0; i <= size_elector - 1; ++i)
@@ -12,7 +11,6 @@ void RAM::inc_electors() {
 		elector[i] = temp_elector[i];
 	delete[]temp_elector;
 }
-
 void RAM::inc_data(int count) {
 	byte *temp_data = new byte[size];
 	for (int i = 0; i <= size - 1; ++i)
@@ -24,7 +22,6 @@ void RAM::inc_data(int count) {
 		data[i] = temp_data[i];
 	delete[]temp_data;
 }
-
 void RAM::push(const byte &value)
 {
 	if (data == nullptr) {
@@ -51,7 +48,6 @@ void RAM::push(const byte &value)
 		}
 	}
 }
-
 void RAM::push(const word &value)
 {
 	if (data == nullptr) {
@@ -82,7 +78,6 @@ void RAM::push(const word &value)
 		}
 	}
 }
-
 void RAM::push(const dword &value)
 {
 	if (data == nullptr) {
@@ -118,7 +113,6 @@ void RAM::push(const dword &value)
 		}
 	}
 }
-
 void RAM::kill_electors() {
 		byte *temp_elector = new byte[size_elector];
 		for (int i = 0; i <= size_elector - 2; ++i)
@@ -129,7 +123,6 @@ void RAM::kill_electors() {
 			elector[i] = temp_elector[i];
 		delete[]temp_elector;
 }
-
 void RAM::dec_data(int count){
 	byte *temp_data = new byte[size];
 	for (int i = 0; i <= size - 1 - count; ++i)
@@ -141,7 +134,6 @@ void RAM::dec_data(int count){
 		data[i] = temp_data[i];
 	delete[]temp_data;
 }
-
 void RAM::kill_elector(int number) {
 	if (number == 28 || number == 15 || number == 13) {
 		elector[size_elector - 1].setbit(7, 0);
@@ -160,26 +152,22 @@ void RAM::kill_elector(int number) {
 		elector[size_elector - 1].setbit(0, 0);
 	}
 }
-
 int RAM::make_dword() {
 	dword dw(data[size - 4], data[size - 3], data[size - 2], data[size - 1]);
 	int temp = dw.to_int();
 	return temp;
 }
-
 int RAM::make_word() {
 	word dw(data[size - 2], data[size - 1]);
 	int temp = dw.to_int();
 	return temp;
 }
-
 int RAM::make_byte() {
 	byte dw;
 	dw = data[size - 1];
 	int temp = dw.to_int();
 	return temp;
 }
-
 int RAM::elections(int electors_choise) {
 	int temp(0);
 	switch (electors_choise) {
@@ -243,9 +231,9 @@ int RAM::elections(int electors_choise) {
 		dec_data(1);
 		kill_electors();
 		return temp;
+	default: return -1;
 	}
 }
-
 int RAM::pop() {
 	int flag(0), w(0);
 	for (int i = 7; i >= 0; --i) {
@@ -260,14 +248,13 @@ int RAM::pop() {
 			w = 0;
 		}
 	}
+	return 0;
 }
-
 void RAM::print_stack()
 {
 	for (int i = size - 1; i >= 0; i--)
 		std::cout << "data[" << i << "] : " << data[i] << std::endl;
 }
-
 void RAM::print_electors()
 {
 	for (int i = size_elector - 1; i >= 0; i--)
