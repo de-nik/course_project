@@ -63,7 +63,7 @@ void ROM::sub(const std::string &in, const std::string &out) {
 		temp_out = return_reg_by_string(out).to_int();
 	else if (validator_title(out)) 
 		temp_out = data.return_by_string(out).to_int();
-	else
+	else if (isint(out))
 		temp_out = std::atoi(out.c_str());
 
 	if (validator_parts(out)) 
@@ -82,7 +82,7 @@ void ROM:: xor (const std::string &in, const std::string &out) {
 		temp_out = return_reg_by_string(out).to_int();
 	else if (validator_title(out))
 		temp_out = data.return_by_string(out).to_int();
-	else
+	else if (isint(out))
 		temp_out = std::atoi(out.c_str());
 
 	if (validator_parts(in))
@@ -120,7 +120,7 @@ bool ROM::cmp(const std::string &in, const std::string &out) {
 		temp_in = return_reg_by_string(in).to_int();
 	else if (validator_title(in))
 		temp_in = data.return_by_string(in).to_int();
-	else
+	else if (isint(out))
 		temp_in = std::atoi(out.c_str());
 
 	if (validator_parts(out)) 
@@ -149,7 +149,7 @@ void ROM::push(const std::string &in) {
 		Stack.push(return_by_string(in));
 	else if (validator_reg(in))	
 		Stack.push(return_reg_by_string(in));
-	else
+	else if (isint(in))
 		dword i = std::atoi(in.c_str());
 }
 void ROM::pop(const std::string &in) {
@@ -162,6 +162,7 @@ void ROM::pop(const std::string &in) {
 }
 /*************************************************************************************/
 int ROM::comp(const std::string &input) {
+	std::cout << "Compilation started." << std::endl;
 	std::ifstream file(input);
 	int count = 0;
 	std::string in;
@@ -175,19 +176,19 @@ int ROM::comp(const std::string &input) {
 		else if (validator_command_double(in)) {
 			file >> in;
 			if (!validator_title(in) && !validator_parts(in) && !validator_reg(in) && !isint(in)) {
-				std::cout << "Unknown in: <" << in << "> in string " << count << std::endl;
+				std::cout << "Unknown <in>: <" << in << "> in string " << count << std::endl;
 				return false;
 			}
 			file >> in;
 			if (!validator_title(in) && !validator_parts(in) && !validator_reg(in) && !isint(in)) {
-				std::cout << "Unknown out: <" << in << "> in string " << count << std::endl;
+				std::cout << "Unknown <out>: <" << in << "> in string " << count << std::endl;
 				return false;
 			}
 		}
 		else if (validator_command(in)) {
 			file >> in; 
 			if (!validator_title(in) && !validator_parts(in) && !validator_reg(in) && !isint(in)) {
-				std::cout << "Unknown in: <" << in << "> in string " << count << std::endl;
+				std::cout << "Unknown <in>: <" << in << "> in string " << count << std::endl;
 				return false;
 			}
 		}
@@ -197,8 +198,10 @@ int ROM::comp(const std::string &input) {
 			return false;
 		}
 	}
-	for (; data.return_size() != 0; )
+	for (; data.return_size() != 0; ) {
 		data.pop();
+		data.~data_block();
+	}
 	std::cout << "comp. completed. Strings in file: " << count << std::endl;
 	return count;
 }
@@ -252,7 +255,8 @@ bool ROM::file_parser() {
 		for (file >> input; !file.eof(); file >> input) {
 			if (validator_command_double(input)) {
 				file >> in >> out;
-				if (input == "mov") mov(in, out);
+				if (input == "mov")
+					mov(in, out);
 				else if (input == "add")
 					add(in, out);
 				else if (input == "sub")
@@ -302,6 +306,7 @@ bool ROM::file_parser() {
 			}
 		}
 		std::cout << "Finished.\n";
+		data.~data_block();
 		return true;
 	}
 	return false;
@@ -333,9 +338,7 @@ bool ROM::validator_title(const std::string &in) {
 }
 bool ROM::isint(const std::string &in) {
 	int i= 0;
-	if (in[0] == '-') {
-		++i;
-	}
+	if (in[0] == '-') ++i;
 	for (i; i < in.size(); ++i) {
 		if (!isdigit(in[i]))
 			return false;

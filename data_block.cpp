@@ -55,23 +55,25 @@ int data_block::size_char(char* text) {
 	return i;
 }
 void data_block::push(const dword &value, const std::string& in) {
-	if (data == nullptr) {
-		++size;
-		++count;
-		data = new dword[1];
-		data[0] = value;
-		title = new char*[1];
-		title[0] = new char[in.size() + 2];
-		strcpy_s(title[0], in.size() + 1, in.c_str());
-	}
-	else {
-		++size;
-		if (count == size) {
-			inc_data();
+	if (size < 512000) {
+		if (size == 0 && count == 0) {
+			++size;
+			++count;
+			data = new dword[1];
+			data[0] = value;
+			title = new char*[1];
+			title[0] = new char[in.size() + 2];
+			strcpy_s(title[0], in.size() + 1, in.c_str());
 		}
-		title[size - 1] = new char[in.size() + 2];
-		strcpy_s(title[size - 1], in.size() + 1, in.c_str());
-		data[size - 1] = value;
+		else {
+			++size;
+			if (count <= size) {
+				inc_data();
+			}
+			title[size - 1] = new char[in.size() + 2];
+			strcpy_s(title[size - 1], in.size() + 1, in.c_str());
+			data[size - 1] = value;
+		}
 	}
 }
 void data_block::print_stack() {
@@ -93,7 +95,7 @@ dword& data_block::return_by_string(const std::string &in) {
 		}
 	}
 }
-int data_block::return_size() {
+int data_block::return_size() const{
 	return size;
 }
 dword data_block::pop() {
@@ -101,4 +103,9 @@ dword data_block::pop() {
 	if (count - size == size)
 		dec_data();
 	return data[size];
+}
+data_block::~data_block() {
+	count = 0;
+	size = 0;
+	delete[]data;
 }

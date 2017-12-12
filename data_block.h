@@ -18,6 +18,7 @@ public:
 	int size_char(char*);
 	bool validator(const std::string &);
 	dword &return_by_string(const std::string &);
-	int return_size();
+	int return_size()const;
 	dword pop();
+	~data_block();
 };

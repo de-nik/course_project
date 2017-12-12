@@ -16,7 +16,7 @@ int main()
 	std::string input;
 	while (input != "exit") {
 		std::cout << "List of avaible command: " << std::endl 
-				  << "mov, add, sub, cmp, push, pop, out, xor, and, dec, inc, open (+ jmp, jne)" << std::endl;
+				  << "mov, add, sub, cmp, push, pop, out, xor, and, dec, inc \nInteger: dword <title> \nRun code from file: open <filename>" << std::endl;
 		std::cin >> input;
 		one.parser(input);
 		system("pause");
