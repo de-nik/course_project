@@ -46,7 +46,9 @@ void RAM::push(const byte &value)
 		else {
 			elector[size_elector - 1].setbit(2, 1);
 		}
-	}
+	} // 00 00 00 00 
+      // 01 11 10 01
+
 }
 void RAM::push(const word &value)
 {

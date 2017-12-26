@@ -18,6 +18,7 @@ class ROM
 	dword EDX;
 	RAM Stack;
 	data_block data;
+	data_block labels;
 public:
 	/*!
 	\brief ¬озврат значени€.
@@ -66,7 +67,7 @@ public:
 	/*!
 	\brief ќпераци€ and.
 	and приемник, источник.
-	¬ыполн€ет операцию xor источника и приемника, результат записываетс€ в приемник, источник не измен€етс€.
+	¬ыполн€ет операцию and источника и приемника, результат записываетс€ в приемник, источник не измен€етс€.
 	\param in приемник
 	\param out источник
 	*/
@@ -109,6 +110,7 @@ public:
 	bool validator_command_double(const std::string &);
 	bool validator_command(const std::string &);
 	bool ROM::validator_title(const std::string &);
+	bool ROM::validator_labels(const std::string &);
 	bool isint(const std::string &in);
 };
 

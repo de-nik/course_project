@@ -170,8 +170,20 @@ int ROM::comp(const std::string &input) {
 		++count;
 		if (in == "dword") {
 			file >> in;
-			dword temp(0);
-			data.push(temp, in);
+			if (!validator_title(in))
+			{
+				dword temp(0);
+				data.push(temp, in);
+			}
+			else {
+				std::cout << "Already used integer: <" << in << "> in string " << count << std::endl;
+				return false;
+			}
+		}
+		else if (in == "label") {
+			file >> in;
+			dword temp((int)file.tellg());
+			labels.push(temp, in);
 		}
 		else if (validator_command_double(in)) {
 			file >> in;
@@ -187,21 +199,18 @@ int ROM::comp(const std::string &input) {
 		}
 		else if (validator_command(in)) {
 			file >> in; 
-			if (!validator_title(in) && !validator_parts(in) && !validator_reg(in) && !isint(in)) {
+			if (!validator_title(in) && !validator_parts(in) && !validator_reg(in) && !isint(in) && !validator_labels(in)) {
 				std::cout << "Unknown <in>: <" << in << "> in string " << count << std::endl;
 				return false;
 			}
 		}
-		else if (in == "out" || in == "jmp" || in == "jne" || in == "label") {}
+		else if (in == "out") {}
 		else {
 			std::cout << "Unknown command: <" << in << "> in string " << count << std::endl;
 			return false;
 		}
-	}
-	for (; data.return_size() != 0; ) {
-		data.pop();
+	}	
 		data.~data_block();
-	}
 	std::cout << "comp. completed. Strings in file: " << count << std::endl;
 	return count;
 }
@@ -270,11 +279,12 @@ bool ROM::file_parser() {
 				else if (input == "inc") 
 					sub(in, "1");
 				else if (input == "cmp") {
-					file >> label;
 					int temp = file.tellg();
+					file >> label;
 					if (label == "jne") {
 						if (cmp(in, out)) {
-							file.seekg(-((int)file.tellg() - lbl), std::ios_base::cur);
+							file >> label;
+							file.seekg(-((int)file.tellg() - labels.return_by_string(label).to_int()), std::ios_base::cur);
 						}
 					}
 					else {
@@ -288,13 +298,17 @@ bool ROM::file_parser() {
 					push(in);
 				else if (input == "pop") 
 					pop(in);
-				else if (input == "dword") 
-					add_integer(0, in);
+				else if (input == "dword") {
+					if (!validator_title(in)) {
+						add_integer(0, in);
+					}
+				}
+				else if (input == "jmp") {
+					file.seekg(-((int)file.tellg() - labels.return_by_string(label).to_int()), std::ios_base::cur);
+				}
 			}
-			else if (input == "label") 
-				lbl = file.tellg();
-			else if (input == "jmp") 
-				file.seekg(-((int)file.tellg() - lbl), std::ios_base::cur);
+			else if (input == "label") {}			
+			
 			else if (input == "out") {
 				std::cout << "EAX: " << EAX << std::endl <<
 					"EBX: " << EBX << std::endl <<
@@ -307,6 +321,7 @@ bool ROM::file_parser() {
 		}
 		std::cout << "Finished.\n";
 		data.~data_block();
+		labels.~data_block();
 		return true;
 	}
 	return false;
@@ -329,12 +344,15 @@ bool ROM::validator_command_double(const std::string &in) {
 	else return false;
 }
 bool ROM::validator_command(const std::string &in) {
-	if (in == "push" || in == "pop" || in == "dec" || in == "inc" || in == "dword")
+	if (in == "push" || in == "pop" || in == "dec" || in == "inc" || in == "dword" || in == "label" || in == "jne" || in == "jmp")
 		return true;
 	else return false;
 }
 bool ROM::validator_title(const std::string &in) {
 	return data.validator(in);
+}
+bool ROM::validator_labels(const std::string &in) {
+	return labels.validator(in);
 }
 bool ROM::isint(const std::string &in) {
 	int i= 0;
