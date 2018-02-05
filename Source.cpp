@@ -3,12 +3,7 @@
 #include "word.h"
 #include "dword.h"
 #include "data_block.h"
-std::ostream & operator<<(std::ostream &out, word &rhs)
-{
-	for (int i = 15; i >= 0; --i)
-		out << rhs.getbit(i);
-	return out;
-}
+
 
 int main()
 {
@@ -22,15 +17,4 @@ int main()
 		system("pause");
 		system("cls");
 	}
-
-	/*data_block a;
-	dword b(7);
-	a.push(b, "first");
-	a.push(b, "second");
-	a.push(b, "3");
-	a.push(b, "4");
-	a.print_stack();*/
-	
-	
-	
 }

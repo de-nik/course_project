@@ -220,6 +220,16 @@ dword& dword::operator&=(const dword& in) {
 	}
 	return *this;
 }
+bool dword::parity() {
+	int temp = 0;
+	for (int i = 0; i < 32; ++i)
+		if (getbit(i)) ++temp;
+
+	if (temp % 2)
+		return false;
+	else
+		return true;
+}
 std::ostream & operator<<(std::ostream &out, dword &rhs){
 	for (int i = 3; i >= 0; --i)
 		out << rhs.return_byte(i) << " : ";

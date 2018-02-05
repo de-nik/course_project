@@ -1,10 +1,10 @@
 mov AH 7
 mov BH 6
 dword a
-label f
+func :
 add a 1
-label s
+ret
+call func
 add BH a
 out
-cmp AH BH
-jne f
+

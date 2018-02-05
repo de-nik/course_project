@@ -117,6 +117,7 @@ public:
 	Возврат для изменения по ссылке
 	*/
 	unsigned char &return_array();
+	bool parity();
 };
 /*!
 \brief Оператор вывода.

@@ -205,6 +205,16 @@ unsigned char byte::return_array() const{
 unsigned char & byte::return_array() {
 	return array_of_bytes;
 }
+bool byte::parity() {
+	int temp = 0;
+	for (int i = 0; i < 8; ++i)
+		if (getbit(i)) ++temp;
+
+	if (temp % 2) 
+		return false;
+	else 
+		return true;
+}
 std::ostream & operator<<(std::ostream &out, byte &in)
 {
 	for (int i = 7; i >= 0; --i)

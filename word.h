@@ -27,5 +27,7 @@ public:
 	word(const byte&, const byte&);
 	word& operator ^=(const word&);
 	word& operator &=(const word&);
-
+	bool parity();
 };
+
+std::ostream & operator<<(std::ostream &out, word &rhs);

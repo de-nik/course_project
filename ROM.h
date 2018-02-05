@@ -16,8 +16,22 @@ class ROM
 	dword EBX;
 	dword ECX;
 	dword EDX;
+
+	dword CR0;
+	dword CR1;
+	dword CR2;
+	dword CR3;
+
+	byte f_CR0;
+	byte f_CR1;
+	byte f_CR2;
+	byte f_CR3;
+
+	word flags;
+
 	RAM Stack;
 	data_block data;
+	data_block callret;
 	data_block labels;
 public:
 	/*!
@@ -32,6 +46,7 @@ public:
 	\param title Возвращает ссылку на dword для пользования
 	*/
 	dword &return_reg_by_string(const std::string &);
+	dword &return_cr_reg_by_string(const std::string &);
 	/*!
 	\brief Пересылка данных.
 	mov приемник, источник. 
@@ -97,21 +112,54 @@ public:
 	\return Байт, слово, или двйоное слово
 	*/
 	void pop(const std::string &);
+	void call(int);
 	int comp(const std::string &);
 	bool parser(const std::string &);
 	bool file_parser();
 	/*!
-	\brief Проверка наличия.
-	Проверяет, введен ли правильный регистр
-	\param in 
+	\brief Проверка названия.
+	Проверяет наличие названия части регистра
 	*/
 	bool validator_parts(const std::string &);
+	/*!
+	\brief Проверка названия.
+	Проверяет наличие названия регистра
+	*/
 	bool validator_reg(const std::string &);
+	/*!
+	\brief Проверка названия.
+	Проверяет наличие названия регистра
+	*/
+	bool validator_cr_reg(const std::string &);
+	/*!
+	\brief Проверка названия.
+	Проверяет наличие названия функции с двумя переменными
+	*/
 	bool validator_command_double(const std::string &);
+	/*!
+	\brief Проверка названия.
+	Проверяет наличие названия функции с одной переменной
+	*/
 	bool validator_command(const std::string &);
-	bool ROM::validator_title(const std::string &);
-	bool ROM::validator_labels(const std::string &);
-	bool isint(const std::string &in);
+	/*!
+	\brief Проверка названия.
+	Проверяет наличие названия пользовательской переменной
+	*/
+	bool validator_title(const std::string &);
+	bool validator_callret_title(const std::string &);
+	/*!
+	\brief Проверка названия.
+	Проверяет наличие названия метки
+	*/
+	bool validator_labels(const std::string &);
+	/*!
+	\brief Проверка на тип.
+	Проверяет является ли объект int
+	*/
+	bool isint(const std::string &);
+	void parity(const std::string &);
+	void zero(const std::string &in);
+	void flags_check(const std::string &in);
 };
 
 std::ostream & operator<<(std::ostream &out, dword &rhs);

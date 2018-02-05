@@ -227,3 +227,19 @@ word& word::operator&=(const word& in) {
 	}
 	return *this;
 }
+bool word::parity() {
+	int temp = 0;
+	for (int i = 0; i < 15; ++i)
+		if (getbit(i)) ++temp;
+
+	if (temp % 2)
+		return false;
+	else
+		return true;
+}
+std::ostream & operator<<(std::ostream &out, word &rhs)
+{
+	for (int i = 15; i >= 0; --i)
+		out << rhs.getbit(i);
+	return out;
+}

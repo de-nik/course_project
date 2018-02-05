@@ -26,7 +26,7 @@ public:
 	dword(const byte&, const byte&, const byte&, const byte&);
 	dword& operator ^=(const dword&);
 	dword& operator &=(const dword&);
-
+	bool parity();
 };
 
 std::ostream & operator<<(std::ostream &out, dword &rhs);
