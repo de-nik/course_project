@@ -413,7 +413,7 @@ bool ROM::file_parser() {
 					}
 				}
 				else if (input == "jmp") {
-					file.seekg(-((int)file.tellg() - labels.return_by_string(label).to_int()), std::ios_base::cur);
+					file.seekg(-((int)file.tellg() - labels.return_by_string(in).to_int()), std::ios_base::cur);
 				}
 			}
 			else if (input == "label") {
